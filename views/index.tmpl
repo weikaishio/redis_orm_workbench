@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{{ .title}}</title>
+
+    <link href="/static/dwz/themes/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/static/dwz/themes/css/core.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/static/dwz/themes/css/print.css" rel="stylesheet" type="text/css" media="print"/>
+    <link href="/static/dwz/uploadify/css/uploadify.css" rel="stylesheet" type="text/css" media="screen"/>
+    <!--[if IE]>
+    <link href="themes/css/ieHack.css" rel="stylesheet" type="text/css" media="screen"/>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+    <script src="/static/dwz/js/speedup.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/jquery-1.11.3.min.js" type="text/javascript"></script><![endif]-->
+    <!--[if gte IE 9]><!-->
+    <script src="/static/dwz/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <!--<![endif]-->
+
+    <script src="/static/dwz/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/jquery.validate.js" type="text/javascript"></script>
+    <!--<script src="/static/dwz/js/jquery.bgiframe.js" type="text/javascript"></script>-->
+    <script src="/static/dwz/xheditor/xheditor-1.2.2.min.js" type="text/javascript"></script>
+    <script src="/static/dwz/xheditor/xheditor_lang/zh-cn.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/static/dwz/chart/echarts.min.js"></script>
+
+
+  <script src="/static/dwz/js/dwz.core.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.util.date.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.validate.method.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.barDrag.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.drag.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.tree.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.accordion.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.ui.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.theme.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.switchEnv.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.alertMsg.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.contextmenu.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.navTab.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.tab.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.resize.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.dialog.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.dialogDrag.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.sortDrag.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.cssTable.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.stable.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.taskBar.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.ajax.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.pagination.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.database.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.datepicker.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.effects.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.panel.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.checkbox.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.history.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.combox.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.file.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.print.js" type="text/javascript"></script>
+
+    <!-- 可以用dwz.min.js替换前面全部dwz.*.js (注意：替换时下面dwz.regional.zh.js还需要引入)
+<script src="bin/dwz.min.js" type="text/javascript"></script>
+-->
+    <script src="/static/dwz/js/dwz.regional.zh.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            DWZ.init("/static/dwz/dwz.frag.xml", {
+                loginUrl: "login_dialog.html", loginTitle: "登录",	// 弹出登录对话框
+                //		loginUrl:"login.html",	// 跳到登录页面
+                statusCode: {ok: 200, error: 300, timeout: 301}, //【可选】
+                pageInfo: {
+                    pageNum: "pageNum",
+                    numPerPage: "numPerPage",
+                    orderField: "orderField",
+                    orderDirection: "orderDirection"
+                }, //【可选】
+                keys: {statusCode: "statusCode", message: "message"}, //【可选】
+                ui: {hideMode: 'offsets'}, //【可选】hideMode:navTab组件切换的隐藏方式，支持的值有’display’，’offsets’负数偏移位置的值，默认值为’display’
+                debug: false,	// 调试模式 【true|false】
+                callback: function () {
+                    initEnv();
+                    $("#themeList").theme({themeBase: "/static/dwz/themes"}); // themeBase 相对于index页面的主题base路径
+                }
+            });
+        });
+
+    </script>
+
+</head>
+
+<body>
+<div id="layout">
+    <div id="header">
+        <div class="headerNav">
+            <a class="logo" href="/index">标志</a>
+
+            <ul class="themeList" id="themeList">
+                <li theme="default">
+                    <div class="selected">蓝色</div>
+                </li>
+                <li theme="green">
+                    <div>绿色</div>
+                </li>
+                <li theme="purple">
+                    <div>紫色</div>
+                </li>
+                <li theme="silver">
+                    <div>银色</div>
+                </li>
+                <li theme="azure">
+                    <div>天蓝</div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- navMenu -->
+
+    </div>
+
+    <div id="leftside">
+        <div id="sidebar_s">
+            <div class="collapse">
+                <div class="toggleCollapse">
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        <div id="sidebar">
+            <div class="toggleCollapse">
+                <h2>主菜单</h2>
+                <div>收缩</div>
+            </div>
+            <div class="accordion" fillSpace="sidebar">
+                <div class="accordionHeader">
+                    <h2><span>Folder</span>ops</h2>
+                </div>
+                <div class="accordionContent">
+                    <ul class="tree treeFolder">
+                        {{if $.tables}}
+
+                        					{{range $id,$table:=$.tables}}
+                        						<li><a href="/schema?table_name={{$table}}"
+                        							   target="navTab" rel="{{$table}}">{{$table}}</a></li>
+
+                        						{{end}}
+                        						{{end}}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="container">
+        <div id="navTab" class="tabsPage">
+            <div class="tabsPageHeader">
+                <div class="tabsPageHeaderContent">
+                    <ul class="navTab-tab">
+                        <li tabid="main" class="main"><a href="javascript:void(0)"><span><span
+                                class="home_icon">我的主页</span></span></a></li>
+                    </ul>
+                </div>
+                <div class="tabsLeft"></div>
+                <div class="tabsRight">right</div>
+                <div class="tabsMore">more</div>
+            </div>
+            <div layoutH="120" class="navTab-panel tabsPageContent layoutBox">
+                <div class="page unitBox">
+                    <div class="alertInfo"></div>
+                    <div class="right"></div>
+                    <p>
+                    {{$sInfo := .systemInfo}}
+                    <table class="list" width="100%" border="0">
+                        <tr>
+                            <td colspan="5"></td>
+                        </tr>
+
+                        <tbody>
+                        <tr width="20%" height="40px">
+                            <td width="10%" height="40px"><b>服务器信息</b></td>
+                            <td>主机名：{{$sInfo.main_server_Hostname}}</td>
+                            <td>总内存：{{$sInfo.main_server_total_memory}}</td>
+                            <td>可用内存：{{$sInfo.main_server_available_memory}}</td>
+                            <td>使用内存比例：{{$sInfo.main_server_UsedPercent_memory}}</td>
+                        </tr>
+                        <tr width="20%" height="40px">
+                            <td width="10%" height="40px"><b>环境信息</b></td>
+                            <td>操作系统：{{$sInfo.os}} {{$sInfo.main_server_PlatformVersion}}</td>
+                            <td>go版本：{{$sInfo.go_varsion}}</td>
+                            <td>gin版本：{{$sInfo.gin_varsion}}</td>
+                            <td>数据库：mysql{{$sInfo.mysql_varsion}} </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer"> <a href="#" target="dialog">Redis ORM 工作台</a></div>
+
+</body>
+
+</html>
