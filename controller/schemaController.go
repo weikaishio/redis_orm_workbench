@@ -21,3 +21,13 @@ func Schema(c *gin.Context) {
 		"columns":    columns,
 	})
 }
+
+func CreateTable(c *gin.Context){
+
+}
+func RebuildIndex(c *gin.Context){
+
+}
+func AddColumn(c *gin.Context){
+//engine not support
+}

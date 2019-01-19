@@ -10,40 +10,12 @@ import (
 	"net/http"
 )
 
-func CookieMiddleware(c *gin.Context) {
-	//urlStr := c.Request.URL.String()
-	//arr := strings.Split(urlStr, "/")
-	//if len(arr) > 1 {
-	//	first := arr[1]
-	//	if first == "static" || first == "favicon.ico" || first == "login" {
-	//		//log.Info("不验证cookie url = %s", urlStr)
-	//	} else {
-	//		val, _ := c.Cookie("ops")
-	//		//log.Info("验证cookie url = %s,cookie=%s", urlStr, val)
-	//		for _, cookie := range controllers.StoredMd5CookieStr {
-	//			if cookie == val {
-	//				c.Next()
-	//				return
-	//			}
-	//		}
-	//		controllers.UserVisit(c)
-	//		c.Abort()
-	//		return
-	//	}
-	//} else {
-	//	controllers.UserVisit(c)
-	//	c.Abort()
-	//	return
-	//}
-	c.Next()
-}
 func setupRouter() *gin.Engine {
 
 	controller.InitBiz()
 
 	r := gin.Default()
 
-	r.Use(CookieMiddleware)
 	r.LoadHTMLGlob("views/*")
 	r.StaticFS("/static", http.Dir("static/"))
 	r.GET("/monitor", func(c *gin.Context) {
