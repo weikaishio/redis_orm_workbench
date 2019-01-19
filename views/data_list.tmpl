@@ -1,0 +1,57 @@
+<form id="pagerForm" method="post" action="">
+    <input type="hidden" name="pageSize" value="{{.pageSize}}"/>
+    <input type="hidden" name="pageIndex" value="{{.pageIndex}}"/>
+    <input type="hidden" name="startTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.condition.StartTime}}"/>
+    <input type="hidden" name="endTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.condition.EndTime}}"/>
+    <input type="hidden" name="columnName"  value="{{.condition.ColumnName}}"/>
+    <input type="hidden" name="individualVal"  value="{{.condition.IndividualValue}}"/>
+    <input type="hidden" name="startNumber"  value="{{.condition.StartNumber}}"/>
+    <input type="hidden" name="endNumber"  value="{{.condition.EndNumber}}"/>
+<input type="hidden" name="ctype"  value="555"/>
+</form>
+<div class="pageHeader" id="table_name_{{$.table_name}}">
+    <form action="" onsubmit="return navTabSearch(this);" method="post">
+        <div class="searchBar" style="padding:0px 0 0px 0">
+            <table class="searchContent">
+                <tr>
+                    <td>查询的字段：
+                        <select name="columnName" onchange="showInput(this)" id="columnName">
+                            <option value="" {{if eq $.condition.ColumnName ""}}selected{{end}}>请选择</option>
+                            {{if $.columns}}
+                            {{range $id,$column:=$.columns}}
+                            <option value="{{$column.ColumnName}}" dataType="{{$column.DataType}}" {{if eq $.condition.ColumnName $column.ColumnName}}selected{{end}}>{{$column.ColumnName}} </option>
+                            {{end}}
+                            {{end}}
+                        </select>
+                        <select name="ctype" onchange="showConditionType(this)" id="ctype">
+                        <option value="0" {{if eq .condition.CType 0}}selected{{end}}>单值</option>
+                        <option value="1" {{if eq .condition.CType 1}}selected{{end}}>时间范围</option>
+                        <option value="2" {{if eq .condition.CType 2}}selected{{end}}>数值范围</option>
+                        </select>
+                    </td>
+                    <td id="show_one" {{if eq .condition.CType 0}}style="display:block"{{else}}style="display:none"{{end}}>
+                    <input type="text" maxlength="50" name="individualVal" value="{{.condition.IndividualValue}}"/>
+                    </td>
+                    <td id="date_one" {{if eq .condition.CType 1}}style="display:block"{{else}}style="display:none"{{end}}>
+                    时间区间：
+                    <input type="text" name="startTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
+                           style="width:120px;" value="{{.condition.StartTime}}"/>--
+                    <input type="text" name="endTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
+                           style="width:120px;" value="{{.condition.EndTime}}"/>
+                    </td>
+                    <td id="number_one" {{if eq .condition.CType 2}}style="display:block"{{else}}style="display:none"{{end}}>
+                        数字区间：>=
+                        <input type="text" maxlength="50" name="startNumber" value="{{.condition.StartNumber}}"/><=
+                        <input type="text" maxlength="50" name="endNumber" value="{{.condition.EndNumber}}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="color:red;" colspan="2">
+                        <button type="submit">查询</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+
