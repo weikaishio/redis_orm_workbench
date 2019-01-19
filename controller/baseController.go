@@ -9,18 +9,19 @@ import (
 var (
 	redisORM          *redis_orm.Engine
 	redisORMSchemaBiz *business.RedisORMSchemaBusiness
+	redisORMDataBiz *business.RedisORMDataBusiness
 )
 
 func InitBiz() {
 	options := redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
+		Addr:     "59.110.27.156:6379",
+		Password: "testwashcar",
 		DB:       1,
 	}
 
 	redisClient := redis.NewClient(&options)
 	redisORM = redis_orm.NewEngine(redisClient)
 	redisORM.IsShowLog(true)
-	redisORM.Schema.ReloadTables()
 	redisORMSchemaBiz = business.NewRedisORMSchemaBusiness(redisORM)
+	redisORMDataBiz = business.NewRedisORMDataBusiness(redisORM)
 }

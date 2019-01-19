@@ -2,6 +2,7 @@ package models
 
 type SchemaColumnsInfo struct {
 	ColumnName string
+	Comment    string
 	DataType   string
 	Tags       string
 	Seq        byte
@@ -18,4 +19,3 @@ func (c ColumnsSortModel) Less(i, j int) bool {
 func (c ColumnsSortModel) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
-

@@ -3,6 +3,7 @@ package business
 import (
 	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
+	"github.com/weikaishio/redis_orm_workbench/models"
 )
 
 type RedisORMDataBusiness struct {
@@ -13,6 +14,19 @@ func NewRedisORMDataBusiness(redisORMEngine *redis_orm.Engine) *RedisORMDataBusi
 	return &RedisORMDataBusiness{
 		redisORMEngine: redisORMEngine,
 	}
+}
+
+func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, offset, limit int, table *redis_orm.Table, cols ...string) ([]map[string]interface{}, int64, error) {
+	searchCon := &redis_orm.SearchCondition{
+		SearchColumn:  []string{table.PrimaryKey},
+		FieldMinValue: redis_orm.ScoreMin,
+		FieldMaxValue: redis_orm.ScoreMax,
+	}
+	val, count, err := this.redisORMEngine.Query(int64(offset), int64(limit), searchCon, table)
+	if err != nil {
+		log.Error("Query(%d,%d,searchCon:%v,tableName:%s) err:%v")
+	}
+	return val, count, err
 }
 
 /*

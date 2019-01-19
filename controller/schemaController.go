@@ -12,12 +12,12 @@ func Schema(c *gin.Context) {
 		c.HTML(http.StatusBadRequest, "schema.tmpl", gin.H{})
 		return
 	}
-	has, tableName, columns := redisORMSchemaBiz.BuildSchemaColumnsInfo(tbName)
+	has, table, columns := redisORMSchemaBiz.BuildSchemaColumnsInfo(tbName)
 	if len(columns) > 0 {
 		sort.Sort(columns)
 	}
 	c.HTML(http.StatusOK, "schema.tmpl", gin.H{
-		"table_name": tableName,
+		"table_name": table.Name,
 		"columns":    columns,
 	})
 }

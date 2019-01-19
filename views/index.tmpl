@@ -135,21 +135,6 @@
                 <div>收缩</div>
             </div>
             <div class="accordion" fillSpace="sidebar">
-                <div class="accordionHeader">
-                    <h2><span>Folder</span>Schema</h2>
-                </div>
-                <div class="accordionContent">
-                    <ul class="tree treeFolder">
-                        {{if $.tables}}
-
-                        					{{range $id,$table:=$.tables}}
-                        						<li><a href="/schema?table_name={{$table}}"
-                        							   target="navTab" rel="{{$table}}">{{$table}}</a></li>
-
-                        						{{end}}
-                        						{{end}}
-                    </ul>
-                </div>
 
                             <div class="accordionHeader">
                                 <h2><span>Folder</span>Data</h2>
@@ -166,6 +151,23 @@
                                     						{{end}}
                                 </ul>
                             </div>
+
+                <div class="accordionHeader">
+                    <h2><span>Folder</span>Schema</h2>
+                </div>
+                <div class="accordionContent">
+                    <ul class="tree treeFolder">
+                        {{if $.tables}}
+
+                        					{{range $id,$table:=$.tables}}
+                        						<li><a href="/schema?table_name={{$table}}"
+                        							   target="navTab" rel="{{$table}}">{{$table}}</a></li>
+
+                        						{{end}}
+                        						{{end}}
+                    </ul>
+                </div>
+
 
                         </div>
         </div>

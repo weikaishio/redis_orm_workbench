@@ -1,15 +1,21 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/gin-gonic/gin"
 	"github.com/mkideal/log"
 	"github.com/mkideal/pkg/osutil/pid"
-	"github.com/weikaishio/redis_orm/sync2db"
 	"github.com/weikaishio/redis_orm_workbench/controller"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 )
 
+/*
+https://gin-gonic.com/api-example/
+*/
 func setupRouter() *gin.Engine {
 
 	controller.InitBiz()
@@ -44,10 +50,26 @@ func main() {
 
 	r := setupRouter()
 
-	go func() { r.Run(":8881") }()
+	svr := http.Server{
+		Addr:    ":8881",
+		Handler: r,
+	}
+	go func() {
+		if err := svr.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal("listen: %s\n", err)
+		}
+	}()
 
 	log.Info("Start~")
-	sync2db.ListenQuitAndDump()
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	if err := svr.Shutdown(ctx); err != nil {
+		log.Error("svr.Shutdown err:%v", err)
+	}
 
 	log.Info("Stop~")
 }

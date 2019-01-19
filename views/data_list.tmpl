@@ -1,6 +1,6 @@
 <form id="pagerForm" method="post" action="">
-    <input type="hidden" name="pageSize" value="{{.pageSize}}"/>
-    <input type="hidden" name="pageIndex" value="{{.pageIndex}}"/>
+    <input type="hidden" name="page_size" value="{{.page_size}}"/>
+    <input type="hidden" name="page_index" value="{{.page_index}}"/>
     <input type="hidden" name="startTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.condition.StartTime}}"/>
     <input type="hidden" name="endTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.condition.EndTime}}"/>
     <input type="hidden" name="columnName"  value="{{.condition.ColumnName}}"/>
@@ -17,9 +17,9 @@
                     <td>查询的字段：
                         <select name="columnName" onchange="showInput(this)" id="columnName">
                             <option value="" {{if eq $.condition.ColumnName ""}}selected{{end}}>请选择</option>
-                            {{if $.columns}}
-                            {{range $id,$column:=$.columns}}
-                            <option value="{{$column.ColumnName}}" dataType="{{$column.DataType}}" {{if eq $.condition.ColumnName $column.ColumnName}}selected{{end}}>{{$column.ColumnName}} </option>
+                            {{if $.indexs}}
+                            {{range $id,$index:=$.indexs}}
+                            <option value="{{$index.NameKey}}" dataType="{{$index.Type}}" {{if eq $.condition.ColumnName $index.NameKey}}selected{{end}}>{{if eq $index.Comment ""}} {{$index.IndexColumn}} {{else}} {{$index.Comment}} {{end}} </option>
                             {{end}}
                             {{end}}
                         </select>
@@ -55,3 +55,56 @@
     </form>
 </div>
 
+
+<div class="pageContent">
+    <table class="list" width="100%" layoutH="138">
+        <thead>
+        <tr>
+            {{if .columns}}
+            {{range $k,$column:=.columns}}
+            <th width="10%">
+            {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{$column.Comment}}{{ end}}
+ </th>
+            {{end}}
+            {{end}}
+            <th width="10%">操作</th>
+        </tr>
+        </thead>
+        <tbody style="word-wrap:break-word;word-break:break-all">
+        {{if .val_ary}}
+        {{range $k,$row :=.val_ary}}
+        <tr style="word-wrap:break-word;">
+            {{if $row}}
+            {{range $columnName,$columnVal:=$row}}
+            <td title="{{$columnName}}">
+                {{$columnVal}}
+                    </td>
+            {{end}}
+            {{end}}
+            <td>
+               {{/*
+                <a title="确实要删除这些记录吗？" target="ajaxTodo" style="display: none;" href="/DBManageController/remove?key={{$.perkey}}&{{$.perkey}}={{FormatMap $v $.perkey}}&tb_name={{$.db_tableName}}&ext_check={{$.db_tableName}}" warn="请选择一个操作对象"
+                                  class="btnDel">删除</a>
+                               <a target="dialog" href="/DBManageController/edit?key={{$.perkey}}&{{$.perkey}}={{FormatMap $v $.perkey}}&tb_name={{$.db_tableName}}&ext_check={{$.db_tableName}}" class="btnEdit"  width="800" height="650" resizable="false"
+                                  warn="请选择一个操作对象" mask="true">编辑</a>
+               */}}
+            </td>
+        </tr>
+        {{end}}
+        {{end}}
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+             <select class="combox" name="page_size" onchange="navTabPageBreak({numPerPage:this.value})">
+                                     <option value="5" {{if eq .page_size 5}}selected{{end}}>5</option>
+                                      <option value="15" {{if eq .page_size 15}}selected{{end}}>15</option>
+                                       <option value="50" {{if eq .page_size 50}}selected{{end}}>50</option>
+                                 </select>
+            <span>条,共{{.total_count}}条</span>
+        </div>
+        <div class="pagination" targetType="navTab" total_count="{{.total_count}}" numPerPage="{{.page_size}}" page_indexShown="5"
+             currentPage="{{.page_index}}"></div>
+    </div>
+</div>

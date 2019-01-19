@@ -20,13 +20,13 @@ func NewRedisORMSchemaBusiness(redisORMEngine *redis_orm.Engine) *RedisORMSchema
 func (this *RedisORMSchemaBusiness) LoadTables() map[string]*redis_orm.Table {
 	return this.redisORMEngine.Tables
 }
-func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bool, string, models.ColumnsSortModel) {
+func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bool, *redis_orm.Table, models.ColumnsSortModel) {
 	tables := this.LoadTables()
 
 	var columns models.ColumnsSortModel
 	table, ok := tables[tableName]
 	if !ok {
-		return ok, "", columns
+		return ok, table, columns
 	}
 	for _, idx := range table.IndexesMap {
 		if len(idx.IndexColumn) > 1 {
@@ -48,6 +48,7 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 			}
 
 			schemaColumn.Tags = strings.Join(tags, " ")
+			schemaColumn.Comment = idx.Comment
 			columns = append(columns, schemaColumn)
 		}
 	}
@@ -57,6 +58,7 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 			ColumnName: schemaColumnTb.ColumnName,
 			DataType:   schemaColumnTb.DataType,
 			Seq:        schemaColumnTb.Seq,
+			Comment:    schemaColumnTb.ColumnComment,
 		}
 		var tags []string
 		if schemaColumnTb.ColumnName == table.PrimaryKey {
@@ -102,5 +104,5 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 		schemaColumn.Tags = strings.Join(tags, " ")
 		columns = append(columns, schemaColumn)
 	}
-	return ok, table.Name, columns
+	return ok, table, columns
 }

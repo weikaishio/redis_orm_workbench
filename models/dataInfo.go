@@ -15,3 +15,4 @@ const (
 	CType_Time            = 1
 	CType_Number          = 2
 )
+
