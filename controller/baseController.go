@@ -14,14 +14,14 @@ var (
 
 func InitBiz() {
 	options := redis.Options{
-		Addr:     "59.110.27.156:6379",
-		Password: "testwashcar",
+		Addr:     "127.0.0.1:6379",
+		Password: "",
 		DB:       1,
 	}
 
 	redisClient := redis.NewClient(&options)
 	redisORM = redis_orm.NewEngine(redisClient)
-	redisORM.IsShowLog(true)
+	redisORM.IsShowLog(false)
 	redisORMSchemaBiz = business.NewRedisORMSchemaBusiness(redisORM)
 	redisORMDataBiz = business.NewRedisORMDataBusiness(redisORM)
 }

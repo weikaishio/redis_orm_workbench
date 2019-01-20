@@ -1,7 +1,7 @@
 package models
 
 type DataConditionInfo struct {
-	ColumnName      string
+	IdxNameKey      string
 	CType           int
 	IndividualValue string
 	StartTime       uint32

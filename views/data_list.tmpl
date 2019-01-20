@@ -1,48 +1,48 @@
 <form id="pagerForm" method="post" action="">
-    <input type="hidden" name="page_size" value="{{.page_size}}"/>
-    <input type="hidden" name="page_index" value="{{.page_index}}"/>
-    <input type="hidden" name="startTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.condition.StartTime}}"/>
-    <input type="hidden" name="endTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.condition.EndTime}}"/>
-    <input type="hidden" name="columnName"  value="{{.condition.ColumnName}}"/>
-    <input type="hidden" name="individualVal"  value="{{.condition.IndividualValue}}"/>
-    <input type="hidden" name="startNumber"  value="{{.condition.StartNumber}}"/>
-    <input type="hidden" name="endNumber"  value="{{.condition.EndNumber}}"/>
+    <input type="hidden" name="numPerPage" value="{{.numPerPage}}"/>
+    <input type="hidden" name="pageNum" value="{{.pageNum}}"/>
+    <input type="hidden" name="startTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.startTime}}"/>
+    <input type="hidden" name="endTime" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.endTime}}"/>
+    <input type="hidden" name="idxNameKey"  value="{{.idxNameKey}}"/>
+    <input type="hidden" name="individualVal"  value="{{.individualVal}}"/>
+    <input type="hidden" name="startNumber"  value="{{.startNumber}}"/>
+    <input type="hidden" name="endNumber"  value="{{.endNumber}}"/>
 <input type="hidden" name="ctype"  value="555"/>
 </form>
-<div class="pageHeader" id="table_name_{{$.table_name}}">
+<div class="pageHeader" id="table_name_{{$.tableName}}">
     <form action="" onsubmit="return navTabSearch(this);" method="post">
         <div class="searchBar" style="padding:0px 0 0px 0">
             <table class="searchContent">
                 <tr>
                     <td>查询的字段：
-                        <select name="columnName" onchange="showInput(this)" id="columnName">
-                            <option value="" {{if eq $.condition.ColumnName ""}}selected{{end}}>请选择</option>
+                        <select name="idxNameKey" onchange="onChangeIdx(this)" id="idxNameKey">
+                            <option value="" {{if eq $.idxNameKey ""}}selected{{end}}>请选择</option>
                             {{if $.indexs}}
                             {{range $id,$index:=$.indexs}}
-                            <option value="{{$index.NameKey}}" dataType="{{$index.Type}}" {{if eq $.condition.ColumnName $index.NameKey}}selected{{end}}>{{if eq $index.Comment ""}} {{$index.IndexColumn}} {{else}} {{$index.Comment}} {{end}} </option>
+                            <option value="{{$index.NameKey}}" dataType="{{$index.Type}}" {{if eq $.idxNameKey $index.NameKey}}selected{{end}}>{{if eq $index.Comment ""}} {{$index.IndexColumn}} {{else}} {{$index.Comment}} {{end}} </option>
                             {{end}}
                             {{end}}
                         </select>
-                        <select name="ctype" onchange="showConditionType(this)" id="ctype">
-                        <option value="0" {{if eq .condition.CType 0}}selected{{end}}>单值</option>
-                        <option value="1" {{if eq .condition.CType 1}}selected{{end}}>时间范围</option>
-                        <option value="2" {{if eq .condition.CType 2}}selected{{end}}>数值范围</option>
+                        <select name="ctype" onchange="onChangeIdxType(this)" class="{{$.tableName}}" id="ctype">
+                        <option value="0" {{if eq .ctype 0}}selected{{end}}>单值</option>
+                        <option value="1" {{if eq .ctype 1}}selected{{end}}>时间范围</option>
+                        <option value="2" {{if eq .ctype 2}}selected{{end}}>数值范围</option>
                         </select>
                     </td>
-                    <td id="show_one" {{if eq .condition.CType 0}}style="display:block"{{else}}style="display:none"{{end}}>
-                    <input type="text" maxlength="50" name="individualVal" value="{{.condition.IndividualValue}}"/>
+                    <td id="show_one" {{if eq .ctype 0}}style="display:block"{{else}}style="display:none"{{end}}>
+                    <input type="text" maxlength="50" id="individualVal" name="individualVal" value="{{.individualVal}}"/>
                     </td>
-                    <td id="date_one" {{if eq .condition.CType 1}}style="display:block"{{else}}style="display:none"{{end}}>
+                    <td id="date_one" {{if eq .ctype 1}}style="display:block"{{else}}style="display:none"{{end}}>
                     时间区间：
                     <input type="text" name="startTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
-                           style="width:120px;" value="{{.condition.StartTime}}"/>--
+                           style="width:120px;" value="{{.startTime}}"/>--
                     <input type="text" name="endTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
-                           style="width:120px;" value="{{.condition.EndTime}}"/>
+                           style="width:120px;" value="{{.endTime}}"/>
                     </td>
-                    <td id="number_one" {{if eq .condition.CType 2}}style="display:block"{{else}}style="display:none"{{end}}>
+                    <td id="number_one" {{if eq .ctype 2}}style="display:block"{{else}}style="display:none"{{end}}>
                         数字区间：>=
-                        <input type="text" maxlength="50" name="startNumber" value="{{.condition.StartNumber}}"/><=
-                        <input type="text" maxlength="50" name="endNumber" value="{{.condition.EndNumber}}"/>
+                        <input type="text" maxlength="50" name="startNumber" value="{{.startNumber}}"/><=
+                        <input type="text" maxlength="50" name="endNumber" value="{{.endNumber}}"/>
                     </td>
                 </tr>
                 <tr>
@@ -71,13 +71,13 @@
         </tr>
         </thead>
         <tbody style="word-wrap:break-word;word-break:break-all">
-        {{if .val_ary}}
-        {{range $k,$row :=.val_ary}}
+        {{if .valAry}}
+        {{range $k,$row :=.valAry}}
         <tr style="word-wrap:break-word;">
             {{if $row}}
             {{range $columnName,$columnVal:=$row}}
             <td title="{{$columnName}}">
-                {{$columnVal}}
+                {{$columnVal | FormatInterface2Time}}
                     </td>
             {{end}}
             {{end}}
@@ -95,16 +95,43 @@
         </tbody>
     </table>
     <div class="panelBar">
+
         <div class="pages">
             <span>显示</span>
-             <select class="combox" name="page_size" onchange="navTabPageBreak({numPerPage:this.value})">
-                                     <option value="5" {{if eq .page_size 5}}selected{{end}}>5</option>
-                                      <option value="15" {{if eq .page_size 15}}selected{{end}}>15</option>
-                                       <option value="50" {{if eq .page_size 50}}selected{{end}}>50</option>
+             <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                                     <option value="5" {{if eq .numPerPage 5}}selected{{end}}>5</option>
+                                      <option value="15" {{if eq .numPerPage 15}}selected{{end}}>15</option>
+                                       <option value="50" {{if eq .numPerPage 50}}selected{{end}}>50</option>
                                  </select>
-            <span>条,共{{.total_count}}条</span>
+            <span>条,共{{.totalCount}}条</span>
         </div>
-        <div class="pagination" targetType="navTab" total_count="{{.total_count}}" numPerPage="{{.page_size}}" page_indexShown="5"
-             currentPage="{{.page_index}}"></div>
+        <div class="pagination" targetType="navTab" total_count="{{.totalCount}}" numPerPage="{{.numPerPage}}" page_indexShown="5"
+             currentPage="{{.pageNum}}"></div>
+
     </div>
 </div>
+<script type="text/javascript">
+func onChangeIdx(obj){
+
+}
+
+function onChangeIdxType(obj) {
+formName="#table_name_"+obj.className;
+   ctype =$(formName).find("#ctype option:selected").val();
+   if (ctype=='0'){
+    $(formName).find("#show_one").show();
+    $(formName).find("#date_one").hide();
+    $(formName).find("#number_one").hide();
+   }else  if (ctype=='1'){
+             $(formName).find("#show_one").hide();
+             $(formName).find("#date_one").show();
+             $(formName).find("#number_one").hide();
+            }else  if (ctype=='2'){
+                          $(formName).find("#show_one").hide();
+                          $(formName).find("#date_one").hide();
+                          $(formName).find("#number_one").show();
+                         }
+}
+
+
+</script>

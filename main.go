@@ -3,14 +3,17 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/gin-gonic/gin"
-	"github.com/mkideal/log"
-	"github.com/mkideal/pkg/osutil/pid"
-	"github.com/weikaishio/redis_orm_workbench/controller"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+	"html/template"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mkideal/log"
+	"github.com/mkideal/pkg/osutil/pid"
+	"github.com/weikaishio/redis_orm_workbench/controller"
+	"github.com/weikaishio/redis_orm_workbench/common"
 )
 
 /*
@@ -21,6 +24,10 @@ func setupRouter() *gin.Engine {
 	controller.InitBiz()
 
 	r := gin.Default()
+	//r.Delims("{[{", "}]}")
+	r.SetFuncMap(template.FuncMap{
+		"FormatInterface2Time": common.FormatInterface2Time,
+	})
 
 	r.LoadHTMLGlob("views/*")
 	r.StaticFS("/static", http.Dir("static/"))

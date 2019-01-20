@@ -8,21 +8,28 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"time"
 )
 
 func DataList(c *gin.Context) {
 	var (
-		pageSize, _    = strconv.Atoi(c.PostForm("page_size"))
-		pageIndex, _   = strconv.Atoi(c.PostForm("page_index"))
-		startTime, _   = strconv.Atoi(c.PostForm("startTime"))
-		endTime, _     = strconv.Atoi(c.PostForm("endTime"))
-		columnName     = c.PostForm("columnName")
+		numPerPage, _  = strconv.Atoi(c.PostForm("numPerPage"))
+		pageNum, _     = strconv.Atoi(c.PostForm("pageNum"))
+		startTime      = c.PostForm("startTime")
+		endTime        = c.PostForm("endTime")
+		idxNameKey     = c.PostForm("idxNameKey")
 		individualVal  = c.PostForm("individualVal")
 		startNumber, _ = strconv.Atoi(c.PostForm("startNumber"))
 		endNumber, _   = strconv.Atoi(c.PostForm("endNumber"))
 		ctype, _       = strconv.Atoi(c.PostForm("ctype"))
 	)
-	log.Info("pageSize:%d, pageIndex:%d", pageSize, pageIndex)
+	if pageNum == 0 {
+		pageNum = 1
+	}
+	if numPerPage < 5 {
+		numPerPage = 15
+	}
+	log.Info("numPerPage:%d, pageNum:%d,startTime:%v,endTime:%v", numPerPage, pageNum, startTime, endTime)
 	tbName, has := c.GetQuery("table_name")
 	if !has {
 		c.HTML(http.StatusBadRequest, "data_list.tmpl", gin.H{})
@@ -33,16 +40,18 @@ func DataList(c *gin.Context) {
 		c.HTML(http.StatusBadRequest, "data_list.tmpl", gin.H{})
 		return
 	}
+	timeStart, _ := time.ParseInLocation("2006-01-02 15:04:05", startTime, time.Local)
+	timeEnd, _ := time.ParseInLocation("2006-01-02 15:04:05", endTime, time.Local)
 	condition := &models.DataConditionInfo{
 		CType:           ctype,
-		ColumnName:      columnName,
+		IdxNameKey:      idxNameKey,
 		IndividualValue: individualVal,
-		StartTime:       uint32(startTime),
-		EndTime:         uint32(endTime),
+		StartTime:       uint32(timeStart.Unix()),
+		EndTime:         uint32(timeEnd.Unix()),
 		StartNumber:     startNumber,
 		EndNumber:       endNumber,
 	}
-	valMap, count, err := redisORMDataBiz.Query(condition, pageIndex*pageSize, pageSize, table)
+	valMap, count, err := redisORMDataBiz.Query(condition, (pageNum-1)*numPerPage, numPerPage, table)
 	if err != nil {
 		c.HTML(http.StatusBadRequest, "data_list.tmpl", gin.H{})
 		return
@@ -70,13 +79,21 @@ func DataList(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "data_list.tmpl", gin.H{
-		"table_name":  table.Name,
-		"indexs":      table.IndexesMap,
-		"columns":     columns,
-		"condition":   condition,
-		"page_size":   pageSize,
-		"page_index":  pageIndex,
-		"total_count": count,
-		"val_ary":     valAry,
+		"tableName":  table.Name,
+		"indexs":     table.IndexesMap,
+		"columns":    columns,
+		//"condition":  condition,
+		"numPerPage": numPerPage,
+		"pageNum":    pageNum,
+		"totalCount": count,
+		"valAry":     valAry,
+
+		"startTime":     startTime,
+		"endTime":       endTime,
+		"idxNameKey":    idxNameKey,
+		"individualVal": individualVal,
+		"startNumber":   startNumber,
+		"endNumber":     endNumber,
+		"ctype":         ctype,
 	})
 }
