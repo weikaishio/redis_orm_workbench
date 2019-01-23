@@ -3,17 +3,19 @@ package main
 import (
 	"context"
 	"flag"
+	"html/template"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
-	"html/template"
 
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mkideal/log"
 	"github.com/mkideal/pkg/osutil/pid"
-	"github.com/weikaishio/redis_orm_workbench/controller"
 	"github.com/weikaishio/redis_orm_workbench/common"
+	"github.com/weikaishio/redis_orm_workbench/config"
+	"github.com/weikaishio/redis_orm_workbench/controller"
 )
 
 /*
@@ -42,23 +44,32 @@ func setupRouter() *gin.Engine {
 }
 
 var (
-	pidFile = flag.String("pid", "redis_orm_workbench.pid", "pid file")
+	pidFile  = flag.String("pid", "redis_orm_workbench.pid", "pid file")
+	dir      = flag.String("dir", "./config/", "config path")
+	location = flag.String("loc", "local", "server location")
 )
 
 func main() {
 	log.SetLevelFromString("TRACE")
+	var err error
+	config.Cfg, err = config.NewConfig(*dir, *location)
+	log.If(err != nil).Fatal("NewConfig(%s,%s) err:%v", *dir, *location, err)
 
-	if err := pid.New(*pidFile); err != nil {
-		log.Fatal("pid.New: %v", err)
-	}
+	err = config.Cfg.Reload()
+	log.If(err != nil).Fatal("config.Cfg.Reload() err:%v", err)
+
+	err = pid.New(*pidFile)
+	log.If(err != nil).Fatal("pid.New: %v", err)
+
 	defer func() {
 		pid.Remove(*pidFile)
+		log.Uninit(nil)
 	}()
 
 	r := setupRouter()
 
 	svr := http.Server{
-		Addr:    ":8881",
+		Addr:    fmt.Sprintf(":%d", config.Cfg.HttpPort),
 		Handler: r,
 	}
 	go func() {

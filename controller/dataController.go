@@ -82,7 +82,6 @@ func DataList(c *gin.Context) {
 		"tableName":  table.Name,
 		"indexs":     table.IndexesMap,
 		"columns":    columns,
-		//"condition":  condition,
 		"numPerPage": numPerPage,
 		"pageNum":    pageNum,
 		"totalCount": count,
@@ -96,4 +95,5 @@ func DataList(c *gin.Context) {
 		"endNumber":     endNumber,
 		"ctype":         ctype,
 	})
+	return
 }

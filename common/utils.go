@@ -4,6 +4,9 @@ import (
 	"github.com/weikaishio/redis_orm"
 	"strconv"
 	"time"
+	"encoding/base64"
+	"crypto/rc4"
+	"github.com/mkideal/log"
 )
 
 func FormatInterface2Time(val interface{}) string {
@@ -42,4 +45,30 @@ func FormatTime(timeUnix int64) string {
 		}
 	}
 	return formatedTime
+}
+
+func DescryptRC4Base64(p, keystr string) []byte {
+	key := []byte(keystr)
+	str, err := base64.StdEncoding.DecodeString(p)
+	if err != nil {
+		log.Info("DescryptBase64 debase64 err:%v", err)
+		return nil
+	}
+	data := []byte(str)
+	ct, err := rc4.NewCipher(key)
+	if err != nil {
+		log.Info("DescryptBase64  err:%v", err)
+		return nil
+	}
+	dst := make([]byte, len(data))
+	ct.XORKeyStream(dst, data)
+	return dst
+}
+func EncryptRC4Base64(p []byte, key string) string {
+	k := []byte(key)
+	cl, _ := rc4.NewCipher(k)
+	dst := make([]byte, len(p))
+	cl.XORKeyStream(dst, p)
+	str := base64.StdEncoding.EncodeToString(dst)
+	return str
 }
