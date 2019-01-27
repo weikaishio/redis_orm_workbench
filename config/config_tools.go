@@ -28,10 +28,14 @@ type ConfigTools struct {
 	RedisClient  *redis.Client
 	RedisORM     *redis_orm.Engine
 	IsShowORMLog bool
+
+	UserMap map[string]string
 }
 
 func NewConfig(dir, location string) (*ConfigTools, error) {
-	cfg := &ConfigTools{}
+	cfg := &ConfigTools{
+		UserMap: make(map[string]string),
+	}
 
 	cfg.Location = location
 	cfg.Dir = dir
@@ -87,6 +91,15 @@ func (cfg *ConfigTools) loadAdvancedConfig(conf string) error {
 	cfg.RedisORM = redis_orm.NewEngine(cfg.RedisClient)
 	cfg.RedisORM.IsShowLog(cfg.IsShowORMLog)
 
+	section := "login"
+	opts, err := c.SectionOptions(section)
+	if err != nil {
+		log.Error("SectionOptions(login) err:%v", err)
+	}
+	for _, opt := range opts {
+		pwd, _ := c.String(section, opt)
+		cfg.UserMap[opt] = pwd
+	}
 	return nil
 }
 

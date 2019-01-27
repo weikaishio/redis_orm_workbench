@@ -30,12 +30,18 @@ func setupRouter() *gin.Engine {
 	r.SetFuncMap(template.FuncMap{
 		"FormatInterface2Time": common.FormatInterface2Time,
 	})
+	r.Use(controller.UseMiddleware)
 
 	r.LoadHTMLGlob("views/*")
 	r.StaticFS("/static", http.Dir("static/"))
 	r.GET("/monitor", func(c *gin.Context) {
 		c.String(http.StatusOK, "ok")
 	})
+	r.GET("/login", controller.Login)
+	r.POST("/login", controller.LoginSubmit)
+	r.GET("/login/logOut", controller.LogOut)
+	r.POST("/login/captcha", controller.GetCaptcha)
+	r.GET("/login/getCaptchaImage", controller.GetCaptchaImage)
 
 	r.GET("/index", controller.Index)
 	r.GET("/schema", controller.Schema)
@@ -57,6 +63,8 @@ func main() {
 
 	err = config.Cfg.Reload()
 	log.If(err != nil).Fatal("config.Cfg.Reload() err:%v", err)
+
+	log.Trace("cfg.UserMap:%v", config.Cfg.UserMap)
 
 	err = pid.New(*pidFile)
 	log.If(err != nil).Fatal("pid.New: %v", err)

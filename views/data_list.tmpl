@@ -7,7 +7,7 @@
     <input type="hidden" name="individualVal"  value="{{.individualVal}}"/>
     <input type="hidden" name="startNumber"  value="{{.startNumber}}"/>
     <input type="hidden" name="endNumber"  value="{{.endNumber}}"/>
-<input type="hidden" name="ctype"  value="555"/>
+<input type="hidden" name="ctype"  value="{{.ctype}}"/>
 </form>
 <div class="pageHeader" id="table_name_{{$.tableName}}">
     <form action="" onsubmit="return navTabSearch(this);" method="post">
@@ -94,6 +94,19 @@
         {{end}}
         </tbody>
     </table>
+    {{/*
+      <div class="panelBar">
+                <div class="pages">
+                    <span>显示</span>
+                    <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                        <option value="15" selected>15</option>
+                    </select>
+                    <span>条,共100条</span>
+                </div>
+                <div class="pagination" targetType="navTab" totalCount="100" numPerPage="5" pageNumShown="5"
+                     currentPage="1"></div>
+            </div>
+    */}}
     <div class="panelBar">
 
         <div class="pages">
@@ -105,7 +118,7 @@
                                  </select>
             <span>条,共{{.totalCount}}条</span>
         </div>
-        <div class="pagination" targetType="navTab" total_count="{{.totalCount}}" numPerPage="{{.numPerPage}}" page_indexShown="5"
+        <div class="pagination" targetType="navTab" totalCount="{{.totalCount}}" numPerPage="{{.numPerPage}}" pageNumShown="5"
              currentPage="{{.pageNum}}"></div>
 
     </div>
