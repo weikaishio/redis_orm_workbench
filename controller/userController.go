@@ -23,7 +23,7 @@ func Login(c *gin.Context) {
 func LogOut(c *gin.Context) {
 	c.SetCookie("user", "", 0, "/", "", false, false)
 	//Login(c)
-	c.Redirect(http.StatusOK,"/login")
+	c.Redirect(http.StatusMovedPermanently, "/login")
 }
 func LoginSubmit(c *gin.Context) {
 	username := c.PostForm("username")
@@ -48,6 +48,7 @@ func LoginSubmit(c *gin.Context) {
 			"message":    "成功",
 			"forwardUrl": "/index",
 			"navTabId":   ""})
+		//c.Redirect(http.StatusMovedPermanently, "/index")
 	} else {
 		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
 			"message":  "验证失败",
