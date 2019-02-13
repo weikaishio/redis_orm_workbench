@@ -2,6 +2,7 @@ package business
 
 import (
 	"errors"
+	"fmt"
 	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
 	"github.com/weikaishio/redis_orm_workbench/models"
@@ -22,6 +23,7 @@ func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, off
 	if condition.IdxNameKey != "" {
 		for _, idx := range table.IndexesMap {
 			if idx.NameKey == condition.IdxNameKey {
+
 				switch condition.CType {
 				case models.CType_IndividualValue:
 					searchCon.FieldMinValue = condition.IndividualValue
@@ -35,6 +37,50 @@ func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, off
 				default:
 					return nil, 0, errors.New("未知的查询条件")
 				}
+
+				if len(idx.IndexColumn) == 2 {
+					switch condition.CType2 {
+					case models.CType_IndividualValue:
+						if idx.Type == redis_orm.IndexType_IdMember {
+							var val, val2, individualVal int64
+							redis_orm.SetInt64FromStr(&val, redis_orm.ToString(searchCon.FieldMinValue))
+							redis_orm.SetInt64FromStr(&val2, redis_orm.ToString(searchCon.FieldMaxValue))
+							redis_orm.SetInt64FromStr(&individualVal, redis_orm.ToString(condition.IndividualValue2))
+							searchCon.FieldMinValue = val<<32 | individualVal
+							searchCon.FieldMaxValue = val2<<32 | individualVal
+						} else {
+							searchCon.FieldMinValue = fmt.Sprintf("%s&%s", searchCon.FieldMinValue, condition.IndividualValue2)
+							searchCon.FieldMaxValue = searchCon.FieldMinValue
+						}
+					case models.CType_Number:
+						if idx.Type == redis_orm.IndexType_IdMember {
+							var val, val2 int
+							redis_orm.SetIntFromStr(&val, redis_orm.ToString(searchCon.FieldMinValue))
+							redis_orm.SetIntFromStr(&val2, redis_orm.ToString(searchCon.FieldMaxValue))
+
+							searchCon.FieldMinValue = val<<32 | condition.StartNumber2
+							searchCon.FieldMaxValue = val2<<32 | condition.EndNumber2
+						} else {
+							searchCon.FieldMinValue = fmt.Sprintf("%s&%s", searchCon.FieldMinValue, condition.StartNumber2)
+							searchCon.FieldMaxValue = fmt.Sprintf("%s&%s", searchCon.FieldMaxValue, condition.EndNumber2)
+						}
+					case models.CType_Time:
+						if idx.Type == redis_orm.IndexType_IdMember {
+							var val, val2 int
+							redis_orm.SetIntFromStr(&val, redis_orm.ToString(searchCon.FieldMinValue))
+							redis_orm.SetIntFromStr(&val2, redis_orm.ToString(searchCon.FieldMaxValue))
+
+							searchCon.FieldMinValue = val<<32 | int(condition.StartTime2)
+							searchCon.FieldMaxValue = val2<<32 | int(condition.EndTime2)
+						} else {
+							searchCon.FieldMinValue = fmt.Sprintf("%s&%s", searchCon.FieldMinValue, condition.StartTime2)
+							searchCon.FieldMaxValue = fmt.Sprintf("%s&%s", searchCon.FieldMaxValue, condition.EndTime2)
+						}
+					default:
+						return nil, 0, errors.New("未知的查询条件")
+					}
+				}
+
 				searchCon.SearchColumn = idx.IndexColumn
 				searchCon.IsAsc = false
 				break
@@ -46,7 +92,7 @@ func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, off
 		searchCon.FieldMinValue = redis_orm.ScoreMin
 		searchCon.FieldMaxValue = redis_orm.ScoreMax
 	}
-	log.Trace("seachCon:%v",*searchCon)
+	log.Trace("seachCon:%v", *searchCon)//236223201284 236223201335
 	val, count, err := this.redisORMEngine.Query(int64(offset), int64(limit), searchCon, table)
 	if err != nil {
 		log.Error("Query(%d,%d,searchCon:%v,tableName:%s) err:%v")
@@ -70,12 +116,10 @@ func (this *RedisORMDataBusiness) List(searchCon *redis_orm.SearchCondition, pag
 		offset = (pageNum - 1) * pageSize
 		limit = pageSize
 	}
-	_, err := this.redisORMEngine.Find(offset, limit, searchCon, &resultAry)
+	count, err := this.redisORMEngine.Find(offset, limit, searchCon, &resultAry)
 	if err != nil {
 		return nil, 0, err
 	}
-	// 查询数量
-	count, err := this.redisORMEngine.Count(searchCon, &resultAry)
 
 	if err != nil {
 		log.Error("Count err:%v", err)

@@ -15,13 +15,20 @@ func DataList(c *gin.Context) {
 	var (
 		numPerPage, _  = strconv.Atoi(c.PostForm("numPerPage"))
 		pageNum, _     = strconv.Atoi(c.PostForm("pageNum"))
-		startTime      = c.PostForm("startTime")
-		endTime        = c.PostForm("endTime")
 		idxNameKey     = c.PostForm("idxNameKey")
 		individualVal  = c.PostForm("individualVal")
 		startNumber, _ = strconv.Atoi(c.PostForm("startNumber"))
 		endNumber, _   = strconv.Atoi(c.PostForm("endNumber"))
+		startTime      = c.PostForm("startTime")
+		endTime        = c.PostForm("endTime")
 		ctype, _       = strconv.Atoi(c.PostForm("ctype"))
+
+		individualVal_2  = c.PostForm("individualVal_2")
+		startNumber_2, _ = strconv.Atoi(c.PostForm("startNumber_2"))
+		endNumber_2, _   = strconv.Atoi(c.PostForm("endNumber_2"))
+		startTime_2      = c.PostForm("startTime_2")
+		endTime_2        = c.PostForm("endTime_2")
+		ctype_2, _       = strconv.Atoi(c.PostForm("ctype_2"))
 	)
 	if pageNum == 0 {
 		pageNum = 1
@@ -42,14 +49,22 @@ func DataList(c *gin.Context) {
 	}
 	timeStart, _ := time.ParseInLocation("2006-01-02 15:04:05", startTime, time.Local)
 	timeEnd, _ := time.ParseInLocation("2006-01-02 15:04:05", endTime, time.Local)
+	timeStart_2, _ := time.ParseInLocation("2006-01-02 15:04:05", startTime_2, time.Local)
+	timeEnd_2, _ := time.ParseInLocation("2006-01-02 15:04:05", endTime_2, time.Local)
 	condition := &models.DataConditionInfo{
-		CType:           ctype,
-		IdxNameKey:      idxNameKey,
-		IndividualValue: individualVal,
-		StartTime:       uint32(timeStart.Unix()),
-		EndTime:         uint32(timeEnd.Unix()),
-		StartNumber:     startNumber,
-		EndNumber:       endNumber,
+		CType:            ctype,
+		IdxNameKey:       idxNameKey,
+		IndividualValue:  individualVal,
+		StartTime:        uint32(timeStart.Unix()),
+		EndTime:          uint32(timeEnd.Unix()),
+		StartNumber:      startNumber,
+		EndNumber:        endNumber,
+		CType2:           ctype_2,
+		IndividualValue2: individualVal_2,
+		StartTime2:       uint32(timeStart_2.Unix()),
+		EndTime2:         uint32(timeEnd_2.Unix()),
+		StartNumber2:     startNumber_2,
+		EndNumber2:       endNumber_2,
 	}
 	valMap, count, err := redisORMDataBiz.Query(condition, (pageNum-1)*numPerPage, numPerPage, table)
 	if err != nil {
@@ -94,6 +109,13 @@ func DataList(c *gin.Context) {
 		"startNumber":   startNumber,
 		"endNumber":     endNumber,
 		"ctype":         ctype,
+
+		"startTime_2":     startTime_2,
+		"endTime_2":       endTime_2,
+		"individualVal_2": individualVal_2,
+		"startNumber_2":   startNumber_2,
+		"endNumber_2":     endNumber_2,
+		"ctype_2":         ctype_2,
 	})
 	return
 }

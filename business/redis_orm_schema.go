@@ -106,3 +106,11 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 	}
 	return ok, table, columns
 }
+//ast from table struct
+func (this *RedisORMSchemaBusiness) CreateTable(){
+
+}
+//
+func (this *RedisORMSchemaBusiness) AlterTable(){
+
+}

@@ -8,6 +8,12 @@ type DataConditionInfo struct {
 	EndTime         uint32
 	StartNumber     int
 	EndNumber       int
+	CType2           int
+	IndividualValue2 string
+	StartTime2       uint32
+	EndTime2         uint32
+	StartNumber2     int
+	EndNumber2       int
 }
 
 const (
