@@ -56,6 +56,7 @@ var (
 )
 
 func main() {
+	flag.Parse()
 	log.SetLevelFromString("TRACE")
 	var err error
 	config.Cfg, err = config.NewConfig(*dir, *location)
