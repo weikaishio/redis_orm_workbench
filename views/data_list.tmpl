@@ -7,13 +7,13 @@
     <input type="hidden" name="individualVal"  value="{{.individualVal}}"/>
     <input type="hidden" name="startNumber"  value="{{.startNumber}}"/>
     <input type="hidden" name="endNumber"  value="{{.endNumber}}"/>
-<input type="hidden" name="ctype"  value="{{.ctype}}"/>
-        <input type="hidden" name="startTime_2" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.startTime_2}}"/>
-        <input type="hidden" name="endTime_2" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.endTime_2}}"/>
-        <input type="hidden" name="individualVal_2"  value="{{.individualVal_2}}"/>
-        <input type="hidden" name="startNumber_2"  value="{{.startNumber_2}}"/>
-        <input type="hidden" name="endNumber_2"  value="{{.endNumber_2}}"/>
-<input type="hidden" name="ctype_2"  value="{{.ctype_2}}"/>
+    <input type="hidden" name="ctype"  value="{{.ctype}}"/>
+    <input type="hidden" name="startTime_2" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.startTime_2}}"/>
+    <input type="hidden" name="endTime_2" dateFmt="yyyy-MM-dd HH:mm:ss" value="{{.endTime_2}}"/>
+    <input type="hidden" name="individualVal_2"  value="{{.individualVal_2}}"/>
+    <input type="hidden" name="startNumber_2"  value="{{.startNumber_2}}"/>
+    <input type="hidden" name="endNumber_2"  value="{{.endNumber_2}}"/>
+    <input type="hidden" name="ctype_2"  value="{{.ctype_2}}"/>
 </form>
 <div class="pageHeader" id="table_name_{{$.tableName}}">
     <form action="" onsubmit="return navTabSearch(this);" method="post">
@@ -30,20 +30,20 @@
                             {{end}}
                         </select>
                         <select name="ctype" onchange="onChangeIdxType(1)" class="{{$.tableName}}" id="ctype">
-                        <option value="0" {{if eq .ctype 0}}selected{{end}}>单值</option>
-                        <option value="1" {{if eq .ctype 1}}selected{{end}}>时间范围</option>
-                        <option value="2" {{if eq .ctype 2}}selected{{end}}>数值范围</option>
+                            <option value="0" {{if eq .ctype 0}}selected{{end}}>单值</option>
+                            <option value="1" {{if eq .ctype 1}}selected{{end}}>时间范围</option>
+                            <option value="2" {{if eq .ctype 2}}selected{{end}}>数值范围</option>
                         </select>
                     </td>
                     <td id="show_one" {{if eq .ctype 0}}style="display:block"{{else}}style="display:none"{{end}}>
-                    <input type="text" maxlength="50" id="individualVal" name="individualVal" value="{{.individualVal}}"/>
+                        <input type="text" maxlength="50" id="individualVal" name="individualVal" value="{{.individualVal}}"/>
                     </td>
                     <td id="date_one" {{if eq .ctype 1}}style="display:block"{{else}}style="display:none"{{end}}>
-                    时间区间：
-                    <input type="text" name="startTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
-                           style="width:120px;" value="{{.startTime}}"/>--
-                    <input type="text" name="endTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
-                           style="width:120px;" value="{{.endTime}}"/>
+                        时间区间：
+                        <input type="text" name="startTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
+                               style="width:120px;" value="{{.startTime}}"/>--
+                        <input type="text" name="endTime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
+                               style="width:120px;" value="{{.endTime}}"/>
                     </td>
                     <td id="number_one" {{if eq .ctype 2}}style="display:block"{{else}}style="display:none"{{end}}>
                         数字区间：>=
@@ -51,30 +51,30 @@
                         <input type="text" maxlength="50" name="endNumber" value="{{.endNumber}}"/>
                     </td>
                 </tr>
-                 <tr>
-                                <td align="right">
-                                 <select name="ctype_2" onchange="onChangeIdxType(2)" class="{{$.tableName}}" id="ctype_2">
-                                                        <option value="0" {{if eq .ctype_2 0}}selected{{end}}>单值</option>
-                                                        <option value="1" {{if eq .ctype_2 1}}selected{{end}}>时间范围</option>
-                                                        <option value="2" {{if eq .ctype_2 2}}selected{{end}}>数值范围</option>
-                                                        </select>
-                                    </td>
-                                    <td id="show_two" {{if eq .ctype_2 0}}style="display:block"{{else}}style="display:none"{{end}}>
-                                    <input type="text" maxlength="50" id="individualVal_2" name="individualVal_2" value="{{.individualVal_2}}"/>
-                                    </td>
-                                    <td id="date_two" {{if eq .ctype_2 1}}style="display:block"{{else}}style="display:none"{{end}}>
-                                    时间区间：
-                                    <input type="text" name="startTime_2" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
-                                           style="width:120px;" value="{{.startTime_2}}"/>--
-                                    <input type="text" name="endTime_2" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
-                                           style="width:120px;" value="{{.endTime_2}}"/>
-                                    </td>
-                                    <td id="number_two" {{if eq .ctype_2 2}}style="display:block"{{else}}style="display:none"{{end}}>
-                                        数字区间：>=
-                                        <input type="text" maxlength="50" name="startNumber_2" value="{{.startNumber_2}}"/><=
-                                        <input type="text" maxlength="50" name="endNumber_2" value="{{.endNumber_2}}"/>
-                                    </td>
-                                </tr>
+                <tr>
+                    <td align="right">
+                        <select name="ctype_2" onchange="onChangeIdxType(2)" class="{{$.tableName}}" id="ctype_2">
+                            <option value="0" {{if eq .ctype_2 0}}selected{{end}}>单值</option>
+                            <option value="1" {{if eq .ctype_2 1}}selected{{end}}>时间范围</option>
+                            <option value="2" {{if eq .ctype_2 2}}selected{{end}}>数值范围</option>
+                        </select>
+                    </td>
+                    <td id="show_two" {{if eq .ctype_2 0}}style="display:block"{{else}}style="display:none"{{end}}>
+                        <input type="text" maxlength="50" id="individualVal_2" name="individualVal_2" value="{{.individualVal_2}}"/>
+                    </td>
+                    <td id="date_two" {{if eq .ctype_2 1}}style="display:block"{{else}}style="display:none"{{end}}>
+                        时间区间：
+                        <input type="text" name="startTime_2" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
+                               style="width:120px;" value="{{.startTime_2}}"/>--
+                        <input type="text" name="endTime_2" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true"
+                               style="width:120px;" value="{{.endTime_2}}"/>
+                    </td>
+                    <td id="number_two" {{if eq .ctype_2 2}}style="display:block"{{else}}style="display:none"{{end}}>
+                        数字区间：>=
+                        <input type="text" maxlength="50" name="startNumber_2" value="{{.startNumber_2}}"/><=
+                        <input type="text" maxlength="50" name="endNumber_2" value="{{.endNumber_2}}"/>
+                    </td>
+                </tr>
                 <tr>
                     <td style="color:red;" colspan="2">
                         <button type="submit">查询</button>
@@ -93,8 +93,8 @@
             {{if .columns}}
             {{range $k,$column:=.columns}}
             <th width="10%">
-            {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{$column.Comment}}{{ end}}
- </th>
+                {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{$column.Comment}}{{ end}}
+            </th>
             {{end}}
             {{end}}
             <th width="10%">操作</th>
@@ -108,44 +108,53 @@
             {{range $columnName,$columnVal:=$row}}
             <td title="{{$columnName}}">
                 {{$columnVal | FormatInterface2Time}}
-                    </td>
-            {{end}}
+            </td>
+
             {{end}}
             <td>
-               {{/*
-                <a title="确实要删除这些记录吗？" target="ajaxTodo" style="display: none;" href="/DBManageController/remove?key={{$.perkey}}&{{$.perkey}}={{FormatMap $v $.perkey}}&tb_name={{$.db_tableName}}&ext_check={{$.db_tableName}}" warn="请选择一个操作对象"
-                                  class="btnDel">删除</a>
-                               <a target="dialog" href="/DBManageController/edit?key={{$.perkey}}&{{$.perkey}}={{FormatMap $v $.perkey}}&tb_name={{$.db_tableName}}&ext_check={{$.db_tableName}}" class="btnEdit"  width="800" height="650" resizable="false"
-                                  warn="请选择一个操作对象" mask="true">编辑</a>
-               */}}
+                {{if $.columns}}
+                {{range $k,$column:=$.columns}}
+                {{if eq $column.Name $.primaryKey}}
+                {{range $columnName,$columnVal:=$row}}
+                {{if eq $columnName $k}}
+                <a title="确实要删除这些记录吗？" target="ajaxTodo" href="/data_list/del?pk_id={{$columnVal}}&table_name={{$.tableName}}" warn="请选择一个操作对象"
+                   class="btnDel">删除</a>
+                <a target="dialog" href="/data_list/edit?pk_id={{$columnVal}}&table_name={{$.tableName}}" class="btnEdit"  width="800" height="650" resizable="false"
+                   warn="请选择一个操作对象" mask="true">编辑</a>
+                {{end}}
+                {{end}}
+                {{end}}
+                {{end}}
+                {{end}}
             </td>
+            {{end}}
         </tr>
         {{end}}
         {{end}}
         </tbody>
     </table>
     {{/*
-      <div class="panelBar">
-                <div class="pages">
-                    <span>显示</span>
-                    <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
-                        <option value="15" selected>15</option>
-                    </select>
-                    <span>条,共100条</span>
-                </div>
-                <div class="pagination" targetType="navTab" totalCount="100" numPerPage="5" pageNumShown="5"
-                     currentPage="1"></div>
-            </div>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="15" selected>15</option>
+            </select>
+            <span>条,共100条</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="100" numPerPage="5" pageNumShown="5"
+             currentPage="1"></div>
+    </div>
     */}}
     <div class="panelBar">
 
         <div class="pages">
             <span>显示</span>
-             <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
-                                     <option value="5" {{if eq .numPerPage 5}}selected{{end}}>5</option>
-                                      <option value="15" {{if eq .numPerPage 15}}selected{{end}}>15</option>
-                                       <option value="50" {{if eq .numPerPage 50}}selected{{end}}>50</option>
-                                 </select>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="5" {{if eq .numPerPage 5}}selected{{end}}>5</option>
+                <option value="15" {{if eq .numPerPage 15}}selected{{end}}>15</option>
+                <option value="50" {{if eq .numPerPage 50}}selected{{end}}>50</option>
+            </select>
             <span>条,共{{.totalCount}}条</span>
         </div>
         <div class="pagination" targetType="navTab" totalCount="{{.totalCount}}" numPerPage="{{.numPerPage}}" pageNumShown="5"
@@ -154,65 +163,62 @@
     </div>
 </div>
 <script type="text/javascript">
+    function onChangeIdx(){
+        formName="#table_name_"+{{$.tableName}};
+        idxColumn =$(formName).find("#idxNameKey option:selected").attr("dataExt");
+        idxColumn=idxColumn.split(" ")
+        $(formName).find("#ctype_2").hide();
+        $(formName).find("#show_two").hide();
+        $(formName).find("#date_two").hide();
+        $(formName).find("#number_two").hide();
+        if (idxColumn.length>1){
+            $(formName).find("#ctype_2").show();
+            onChangeIdxType(2);
+        }
+    }
 
-function onChangeIdx(){
-formName="#table_name_"+{{$.tableName}};
-   idxColumn =$(formName).find("#idxNameKey option:selected").attr("dataExt");
-     idxColumn=idxColumn.split(" ")
-      $(formName).find("#ctype_2").hide();
-      $(formName).find("#show_two").hide();
-              $(formName).find("#date_two").hide();
-              $(formName).find("#number_two").hide();
-if (idxColumn.length>1){
-      $(formName).find("#ctype_2").show();
-onChangeIdxType(2);
-}
+    function onChangeIdxType(seq) {
+        formName="#table_name_"+{{$.tableName}};
+        let ctype;
+        if (seq==1){
+            idxColumn =$(formName).find("#idxNameKey option:selected").attr("dataExt");
+            idxColumn=idxColumn.split(" ")
+            ctype =$(formName).find("#ctype option:selected").val();
+            if (ctype=='0'){
+                $(formName).find("#show_one").show();
+                $(formName).find("#date_one").hide();
+                $(formName).find("#number_one").hide();
+            }else if (ctype=='1'){
+                if (idxColumn.length>1){
+                    alert("组合索引情况下，第一个值用范围，会查询不准，后32位值基本不起作用了");
+                }
+                $(formName).find("#show_one").hide();
+                $(formName).find("#date_one").show();
+                $(formName).find("#number_one").hide();
+            }else if (ctype=='2'){
+                if (idxColumn.length>1){
+                    alert("组合索引情况下，第一个值用范围，会查询不准，后32位值基本不起作用了");
+                }
+                $(formName).find("#show_one").hide();
+                $(formName).find("#date_one").hide();
+                $(formName).find("#number_one").show();
+            }
 
-}
-function onChangeIdxType(seq) {
-formName="#table_name_"+{{$.tableName}};
-let ctype;
-if (seq==1){
- idxColumn =$(formName).find("#idxNameKey option:selected").attr("dataExt");
-     idxColumn=idxColumn.split(" ")
-ctype =$(formName).find("#ctype option:selected").val();
- if (ctype=='0'){
-    $(formName).find("#show_one").show();
-    $(formName).find("#date_one").hide();
-    $(formName).find("#number_one").hide();
-   }else if (ctype=='1'){
-   if (idxColumn.length>1){
-   alert("组合索引情况下，第一个值用范围，会查询不准，后32位值基本不起作用了");
-   }
-             $(formName).find("#show_one").hide();
-             $(formName).find("#date_one").show();
-             $(formName).find("#number_one").hide();
-   }else if (ctype=='2'){
-    if (idxColumn.length>1){
-      alert("组合索引情况下，第一个值用范围，会查询不准，后32位值基本不起作用了");
-      }
-     $(formName).find("#show_one").hide();
-                          $(formName).find("#date_one").hide();
-                          $(formName).find("#number_one").show();
-     }
-
-}else{
-     ctype =$(formName).find("#ctype_2 option:selected").val();
-     if (ctype=='0'){
-         $(formName).find("#show_two").show();
-         $(formName).find("#date_two").hide();
-         $(formName).find("#number_two").hide();
-        }else if (ctype=='1'){
-                  $(formName).find("#show_two").hide();
-                  $(formName).find("#date_two").show();
-                  $(formName).find("#number_two").hide();
-        }else if (ctype=='2'){
-          $(formName).find("#show_two").hide();
-                               $(formName).find("#date_two").hide();
-                               $(formName).find("#number_two").show();
-          }
-     }
-}
-
-
+        }else{
+            ctype =$(formName).find("#ctype_2 option:selected").val();
+            if (ctype=='0'){
+                $(formName).find("#show_two").show();
+                $(formName).find("#date_two").hide();
+                $(formName).find("#number_two").hide();
+            }else if (ctype=='1'){
+                $(formName).find("#show_two").hide();
+                $(formName).find("#date_two").show();
+                $(formName).find("#number_two").hide();
+            }else if (ctype=='2'){
+                $(formName).find("#show_two").hide();
+                $(formName).find("#date_two").hide();
+                $(formName).find("#number_two").show();
+            }
+        }
+    }
 </script>

@@ -46,6 +46,9 @@ func setupRouter() *gin.Engine {
 	r.GET("/index", controller.Index)
 	r.GET("/schema", controller.Schema)
 	r.Any("/data_list", controller.DataList)
+	r.GET("/", controller.Index)
+	r.POST("/data_list/del", controller.DataDel)
+	r.Any("/data_list/edit", controller.DataEdit)
 	return r
 }
 

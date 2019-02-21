@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
@@ -95,6 +96,7 @@ func DataList(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "data_list.tmpl", gin.H{
 		"tableName":  table.Name,
+		"primaryKey": table.PrimaryKey,
 		"indexs":     table.IndexesMap,
 		"columns":    columns,
 		"numPerPage": numPerPage,
@@ -116,6 +118,60 @@ func DataList(c *gin.Context) {
 		"startNumber_2":   startNumber_2,
 		"endNumber_2":     endNumber_2,
 		"ctype_2":         ctype_2,
+	})
+	return
+}
+func DataDel(c *gin.Context) {
+	tbName, has := c.GetQuery("table_name")
+	if !has {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "参数不对",
+			"navTabId": "data_" + tbName})
+		return
+	}
+	pkIdStr, has := c.GetQuery("pk_id")
+	if !has {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "参数不对",
+			"navTabId": "data_" + tbName})
+		return
+	}
+	var pkId int64
+	redis_orm.SetInt64FromStr(&pkId, pkIdStr)
+	has, table, _ := redisORMSchemaBiz.BuildSchemaColumnsInfo(tbName)
+	if !has {
+		c.HTML(http.StatusBadRequest, "data_list.tmpl", gin.H{})
+		return
+	}
+	err := redisORMDataBiz.Del(table, pkId)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "删除失败：" + err.Error(),
+			"navTabId": "data_" + tbName})
+	} else {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+			"message":  fmt.Sprint("删除成功：删除的ID=%d", pkId),
+			"navTabId": "data_" + tbName})
+	}
+	//不用bean，直接传table和map~
+	//schemaColumnsInfo := models.SchemaColumnsInfo{ColumnName: "colName"}
+	//bys, _ := json.Marshal(schemaColumnsInfo)
+	//val := reflect.New(reflect.TypeOf(schemaColumnsInfo)).Interface()
+	//json.Unmarshal(bys, &val)
+	//bys2,_:=json.Marshal(val)
+	//fmt.Printf("val:%s\nval:%s\ntyp:%v\n",string(bys), string(bys2),reflect.TypeOf(schemaColumnsInfo))
+}
+func DataEdit(c *gin.Context) {
+	tbName, has := c.GetQuery("table_name")
+	if !has {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "参数不对",
+			"navTabId": "data_" + tbName})
+		return
+	}
+	//todo:
+	c.HTML(http.StatusOK, "data_edit.tmpl", gin.H{
+		"tableName":  tbName,
 	})
 	return
 }

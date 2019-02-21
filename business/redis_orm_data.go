@@ -92,7 +92,7 @@ func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, off
 		searchCon.FieldMinValue = redis_orm.ScoreMin
 		searchCon.FieldMaxValue = redis_orm.ScoreMax
 	}
-	log.Trace("seachCon:%v", *searchCon)//236223201284 236223201335
+	log.Trace("seachCon:%v", *searchCon) //236223201284 236223201335
 	val, count, err := this.redisORMEngine.Query(int64(offset), int64(limit), searchCon, table)
 	if err != nil {
 		log.Error("Query(%d,%d,searchCon:%v,tableName:%s) err:%v")
@@ -125,4 +125,17 @@ func (this *RedisORMDataBusiness) List(searchCon *redis_orm.SearchCondition, pag
 		log.Error("Count err:%v", err)
 	}
 	return resultAry, count, err
+}
+
+func (this *RedisORMDataBusiness) Del(table *redis_orm.Table, pkInt int64) error {
+	err := this.redisORMEngine.DeleteByPK(table, pkInt)
+	return err
+}
+
+func (this *RedisORMDataBusiness) Edit(table *redis_orm.Table, columnValMap map[string]string) error {
+	return this.redisORMEngine.UpdateByMap(table,columnValMap)
+}
+
+func (this *RedisORMDataBusiness) Insert(table *redis_orm.Table, columnValMap map[string]string) error {
+	return this.redisORMEngine.InsertByMap(table,columnValMap)
 }
