@@ -24,7 +24,7 @@
     <!--<script src="/static/dwz/js/jquery.bgiframe.js" type="text/javascript"></script>-->
 
 
-  <script src="/static/dwz/js/dwz.core.js" type="text/javascript"></script>
+    <script src="/static/dwz/js/dwz.core.js" type="text/javascript"></script>
     <script src="/static/dwz/js/dwz.util.date.js" type="text/javascript"></script>
     <script src="/static/dwz/js/dwz.validate.method.js" type="text/javascript"></script>
     <script src="/static/dwz/js/dwz.barDrag.js" type="text/javascript"></script>
@@ -93,9 +93,9 @@
     <div id="header">
         <div class="headerNav">
             <a class="logo" href="/index">标志</a>
-<ul class="nav">
-					<li><a href="/login/logOut" onclick="if(confirm('确定注销吗?')==false)return false;">注销</a></li>
-				</ul>
+            <ul class="nav">
+                <li><a href="/login/logOut" onclick="if(confirm('确定注销吗?')==false)return false;">注销</a></li>
+            </ul>
 
             <ul class="themeList" id="themeList">
                 <li theme="default">
@@ -135,40 +135,44 @@
             </div>
             <div class="accordion" fillSpace="sidebar">
 
-                            <div class="accordionHeader">
-                                <h2><span>Folder</span>Data</h2>
-                            </div>
-                            <div class="accordionContent">
-                                <ul class="tree treeFolder">
-                                    {{if $.tables}}
+                <div class="accordionHeader">
+                    <h2><span>Folder</span>Data</h2>
+                </div>
+                <div class="accordionContent">
+                    <ul class="tree treeFolder">
+                        {{if $.tables}}
 
-                                    					{{range $id,$table:=$.tables}}
-                                    						<li><a href="/data_list?table_name={{$table}}"
-                                    							   target="navTab" rel="data_{{$table}}">{{$table}}</a></li>
+                        {{range $id,$table:=$.tables}}
+                        <li><a href="/data_list?table_name={{$table}}"
+                               target="navTab" rel="data_{{$table}}">{{$table}}</a></li>
 
-                                    						{{end}}
-                                    						{{end}}
-                                </ul>
-                            </div>
+                        {{end}}
+                        {{end}}
+                    </ul>
+                </div>
 
                 <div class="accordionHeader">
                     <h2><span>Folder</span>Schema</h2>
                 </div>
                 <div class="accordionContent">
                     <ul class="tree treeFolder">
+
+                        <li><a href="/schema/create_table"
+                               target="navTab">建表</a></li>
+
                         {{if $.tables}}
 
-                        					{{range $id,$table:=$.tables}}
-                        						<li><a href="/schema?table_name={{$table}}"
-                        							   target="navTab" rel="{{$table}}">{{$table}}</a></li>
+                        {{range $id,$table:=$.tables}}
+                        <li><a href="/schema?table_name={{$table}}"
+                               target="navTab" rel="{{$table}}">{{$table}}</a></li>
 
-                        						{{end}}
-                        						{{end}}
+                        {{end}}
+                        {{end}}
                     </ul>
                 </div>
 
 
-                        </div>
+            </div>
         </div>
     </div>
     <div id="container">
@@ -189,7 +193,7 @@
                     <div class="alertInfo"></div>
                     <div class="right"></div>
                     <p>
-                    {{$sInfo := .systemInfo}}
+                        {{$sInfo := .systemInfo}}
                     <table class="list" width="100%" border="0">
                         <tr>
                             <td colspan="5"></td>

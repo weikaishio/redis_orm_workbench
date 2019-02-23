@@ -92,7 +92,7 @@ func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, off
 		searchCon.FieldMinValue = redis_orm.ScoreMin
 		searchCon.FieldMaxValue = redis_orm.ScoreMax
 	}
-	log.Trace("seachCon:%v", *searchCon)//236223201284 236223201335
+	log.Trace("seachCon:%v", *searchCon) //236223201284 236223201335
 	val, count, err := this.redisORMEngine.Query(int64(offset), int64(limit), searchCon, table)
 	if err != nil {
 		log.Error("Query(%d,%d,searchCon:%v,tableName:%s) err:%v")

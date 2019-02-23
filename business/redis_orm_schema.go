@@ -87,10 +87,6 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 		if schemaColumnTb.ColumnName == table.AutoIncrement {
 			tags = append(tags, redis_orm.TagAutoIncrement)
 		}
-		if schemaColumnTb.ColumnComment != "" {
-			tags = append(tags, redis_orm.TagComment)
-			tags = append(tags, fmt.Sprintf("'%s'", schemaColumnTb.ColumnComment))
-		}
 		if schemaColumnTb.ColumnName == table.Created {
 			tags = append(tags, redis_orm.TagCreatedAt)
 		}
@@ -99,18 +95,24 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 		}
 		if schemaColumnTb.DefaultValue != "" {
 			tags = append(tags, redis_orm.TagDefaultValue)
-			tags = append(tags, schemaColumnTb.DefaultValue)
+			tags = append(tags, fmt.Sprintf("'%s'", schemaColumnTb.DefaultValue))
+		}
+		if schemaColumnTb.ColumnComment != "" {
+			tags = append(tags, redis_orm.TagComment)
+			tags = append(tags, fmt.Sprintf("'%s'", schemaColumnTb.ColumnComment))
 		}
 		schemaColumn.Tags = strings.Join(tags, " ")
 		columns = append(columns, schemaColumn)
 	}
 	return ok, table, columns
 }
+
 //ast from table struct
-func (this *RedisORMSchemaBusiness) CreateTable(){
+func (this *RedisORMSchemaBusiness) CreateTable() {
 
 }
+
 //
-func (this *RedisORMSchemaBusiness) AlterTable(){
+func (this *RedisORMSchemaBusiness) AlterTable() {
 
 }

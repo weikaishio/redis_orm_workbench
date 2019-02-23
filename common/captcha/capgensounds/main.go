@@ -9,10 +9,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"io"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 )
 

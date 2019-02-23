@@ -6,11 +6,11 @@
 package main
 
 import (
+	"github.com/weikaishio/redis_orm_workbench/common/captcha"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"cw_bg/app/common/captcha"
 	"text/template"
 )
 

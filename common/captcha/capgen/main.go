@@ -6,12 +6,12 @@
 package main
 
 import (
+	"cw_bg/app/common/captcha"
 	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
-	"cw_bg/app/common/captcha"
 )
 
 var (

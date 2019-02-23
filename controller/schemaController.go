@@ -23,12 +23,21 @@ func Schema(c *gin.Context) {
 	})
 }
 
-func CreateTable(c *gin.Context){
+func CreateTable(c *gin.Context) {
 
 }
-func RebuildIndex(c *gin.Context){
+func DropTable(c *gin.Context) {
 
 }
-func AddColumn(c *gin.Context){
-//engine not support
+func TruncateTable(c *gin.Context) {
+
+}
+func RebuildIndex(c *gin.Context) {
+
+}
+func AddColumn(c *gin.Context) {
+
+}
+func DropColumn(c *gin.Context) {
+
 }

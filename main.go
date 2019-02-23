@@ -45,6 +45,10 @@ func setupRouter() *gin.Engine {
 
 	r.GET("/index", controller.Index)
 	r.GET("/schema", controller.Schema)
+	r.GET("/schema/create_table", controller.CreateTable)
+	r.GET("/schema/drop_table", controller.DropTable)
+	r.GET("/schema/truncate_table", controller.TruncateTable)
+	r.GET("/schema/rebuild_index", controller.RebuildIndex)
 	r.Any("/data_list", controller.DataList)
 	return r
 }

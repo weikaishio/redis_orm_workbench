@@ -1,12 +1,12 @@
 package common
 
 import (
+	"crypto/rc4"
+	"encoding/base64"
+	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
 	"strconv"
 	"time"
-	"encoding/base64"
-	"crypto/rc4"
-	"github.com/mkideal/log"
 )
 
 func FormatInterface2Time(val interface{}) string {
