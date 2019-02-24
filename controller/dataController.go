@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
@@ -8,6 +10,7 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -95,6 +98,7 @@ func DataList(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "data_list.tmpl", gin.H{
 		"tableName":  table.Name,
+		"primaryKey": table.PrimaryKey,
 		"indexs":     table.IndexesMap,
 		"columns":    columns,
 		"numPerPage": numPerPage,
@@ -118,4 +122,218 @@ func DataList(c *gin.Context) {
 		"ctype_2":         ctype_2,
 	})
 	return
+}
+
+func VerifyTable(c *gin.Context) (table *redis_orm.Table, err error) {
+	tbName, has := c.GetQuery("table_name")
+	if !has {
+		err = fmt.Errorf("%s参数不对", "table_name")
+		return
+	}
+
+	tables := redisORMSchemaBiz.LoadTables()
+
+	table, has = tables[tbName]
+	if !has {
+		err = fmt.Errorf("表:%s不存在", tbName)
+		return
+	}
+	return
+}
+func VerifyTableAndPkInt(c *gin.Context) (pkId int64, table *redis_orm.Table, err error) {
+	tbName, has := c.GetQuery("table_name")
+	if !has {
+		err = fmt.Errorf("%s参数不对", "table_name")
+		return
+	}
+	pkIdStr, has := c.GetQuery("pk_id")
+	if !has {
+		err = fmt.Errorf("%s参数不对", "pk_id")
+		return
+	}
+	redis_orm.SetInt64FromStr(&pkId, pkIdStr)
+
+	tables := redisORMSchemaBiz.LoadTables()
+
+	table, has = tables[tbName]
+	if !has {
+		err = fmt.Errorf("表:%s不存在", tbName)
+		return
+	}
+	return
+}
+func DataDel(c *gin.Context) {
+	pkId, table, err := VerifyTableAndPkInt(c)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  err.Error(),
+			"navTabId": "data_" + c.Query("table_name")})
+		return
+	}
+	err = redisORMDataBiz.Del(table, pkId)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "删除失败：" + err.Error(),
+			"navTabId": "data_" + table.Name})
+	} else {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+			"message":  fmt.Sprint("删除成功：删除的ID=%d", pkId),
+			"navTabId": "data_" + table.Name})
+	}
+	//不用bean，直接传table和map~
+	//schemaColumnsInfo := models.SchemaColumnsInfo{ColumnName: "colName"}
+	//bys, _ := json.Marshal(schemaColumnsInfo)
+	//val := reflect.New(reflect.TypeOf(schemaColumnsInfo)).Interface()
+	//json.Unmarshal(bys, &val)
+	//bys2,_:=json.Marshal(val)
+	//fmt.Printf("val:%s\nval:%s\ntyp:%v\n",string(bys), string(bys2),reflect.TypeOf(schemaColumnsInfo))
+}
+func DataEdit(c *gin.Context) {
+	table, err := VerifyTable(c)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  err.Error(),
+			"navTabId": "data_" + c.Query("table_name")})
+		return
+	}
+	var columns redis_orm.ColumnsModel
+	for _, column := range table.ColumnsMap {
+		columns = append(columns, column)
+	}
+	if len(columns) > 0 {
+		sort.Sort(columns)
+	}
+	if strings.ToLower(c.Request.Method) == "get" {
+		pkIdStr, hasId := c.GetQuery("pk_id")
+		if !hasId {
+			var vals []interface{}
+			for _, column := range columns {
+				if column.IsPrimaryKey {
+					if column.IsAutoIncrement {
+						vals = append(vals, 0)
+					}
+				} else if column.IsUpdated || column.IsCreated {
+					vals = append(vals, time.Now().Unix())
+				} else {
+					vals = append(vals, "")
+				}
+			}
+			c.HTML(http.StatusOK, "data_edit.tmpl", gin.H{
+				"tableName": table.Name,
+				"valAry":    vals,
+				"columns":   columns,
+			})
+			return
+		}
+		var pkId int64
+		err = redis_orm.SetInt64FromStr(&pkId, pkIdStr)
+		if err != nil {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+				"message":  fmt.Sprintf("%s参数值(%v)不对", "pk_id", pkIdStr),
+				"navTabId": "data_" + c.Query("table_name")})
+			return
+		}
+
+		valMap, has, err := redisORMDataBiz.Get(table, pkId)
+		if err != nil {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+				"message":  err.Error(),
+				"navTabId": "data_" + c.Query("table_name")})
+			return
+		}
+		if !has {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+				"message":  fmt.Sprintf("数据(%d)不存在", pkId),
+				"navTabId": "data_" + c.Query("table_name")})
+			return
+		}
+
+		var vals []interface{}
+		for _, column := range columns {
+			vals = append(vals, valMap[column.Name])
+		}
+
+		c.HTML(http.StatusOK, "data_edit.tmpl", gin.H{
+			"tableName": table.Name,
+			"pk_id":     pkId,
+			"valAry":    vals,
+			"columns":   columns,
+		})
+
+	} else if strings.ToLower(c.Request.Method) == "post" {
+		valMap := make(map[string]string)
+		for colName, col := range table.ColumnsMap {
+			v, has := c.GetPostForm(colName)
+			if !has {
+				valMap[colName] = col.DefaultValue
+			} else {
+				valMap[colName] = v
+			}
+		}
+		log.Info("valMap:%v", valMap)
+		pkIdStr, hasId := c.GetQuery("pk_id")
+		if hasId {
+			var pkId int64
+			err = redis_orm.SetInt64FromStr(&pkId, pkIdStr)
+			if err == nil && pkId > 0 {
+				err = redisORMDataBiz.Edit(table, valMap)
+			} else {
+				err = redisORMDataBiz.Insert(table, valMap)
+			}
+		} else {
+			err = redisORMDataBiz.Insert(table, valMap)
+		}
+		if err != nil {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+				"message":  err.Error(),
+				"navTabId": "data_" + c.Query("table_name")})
+			return
+		} else {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+				"message":  "提交成功",
+				"navTabId": "data_" + c.Query("table_name")})
+		}
+	}
+	return
+}
+
+func RebuildIndex(c *gin.Context) {
+	table, err := VerifyTable(c)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  err.Error(),
+			"navTabId": "data_" + c.Query("table_name")})
+		return
+	}
+	err = redisORMDataBiz.RebuildIndex(table)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "处理失败：" + err.Error(),
+			"navTabId": "data_" + table.Name})
+	} else {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+			"message":  "处理成功",
+			"navTabId": "data_" + table.Name})
+	}
+}
+
+func TruncateTable(c *gin.Context) {
+	table, err := VerifyTable(c)
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  err.Error(),
+			"navTabId": "data_" + c.Query("table_name")})
+		return
+	}
+	//err = redisORMDataBiz.TruncateTable(table)
+	err = errors.New("太危险了，功能先不放出来")
+	if err != nil {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+			"message":  "处理失败：" + err.Error(),
+			"navTabId": "data_" + table.Name})
+	} else {
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+			"message":  "处理成功",
+			"navTabId": "data_" + table.Name})
+	}
 }

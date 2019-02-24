@@ -6,26 +6,58 @@ import (
 	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
 	"strconv"
+	"strings"
 	"time"
 )
 
 func FormatInterface2Time(val interface{}) string {
 	switch v := val.(type) {
 	case int64:
-		return FormatTime(v)
+		val, _ := FormatTime(v)
+		return val
 	default:
 		valStr := redis_orm.ToString(val)
 		if valStr != "" {
 			var timeUnix int64
 			err := redis_orm.SetInt64FromStr(&timeUnix, valStr)
 			if err == nil && timeUnix > 0 {
-				return FormatTime(timeUnix)
+				val, _ := FormatTime(timeUnix)
+				return val
 			}
 		}
 		return valStr
 	}
 }
-func FormatTime(timeUnix int64) string {
+
+func IsTime(val interface{}) bool {
+	switch v := val.(type) {
+	case int64:
+		_, isTime := FormatTime(v)
+		return isTime
+	default:
+		valStr := redis_orm.ToString(val)
+		if valStr != "" {
+			var timeUnix int64
+			err := redis_orm.SetInt64FromStr(&timeUnix, valStr)
+			if err == nil && timeUnix > 0 {
+				_, isTime := FormatTime(timeUnix)
+				return isTime
+			}
+		}
+		return false
+	}
+}
+
+func LimitStrLen(val string, limitLen int) string {
+	val = strings.Split(val, " ")[0]
+	if len(val) > limitLen {
+		return string(val[0:limitLen]) + "..."
+	} else {
+		return val
+	}
+}
+
+func FormatTime(timeUnix int64) (string, bool) {
 	timeUnixStr := strconv.FormatInt(timeUnix, 10)
 	formatedTime := timeUnixStr
 	if timeUnix > 0 {
@@ -42,9 +74,10 @@ func FormatTime(timeUnix int64) string {
 			//纳秒
 			formatedTime = time.Unix(timeUnix/1e9, 0).Format("2006-01-02 15:04:05")
 		default:
+			return formatedTime,false
 		}
 	}
-	return formatedTime
+	return formatedTime,true
 }
 
 func DescryptRC4Base64(p, keystr string) []byte {

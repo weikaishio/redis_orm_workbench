@@ -1,0 +1,60 @@
+<form method="POST" action="/data_list/edit?pk_id={{.pk_id}}&table_name={{.tableName}}" class="pageForm required-validate"
+      onsubmit="return iframeCallback(this, dialogAjaxDone);">
+    <div class="pageFormContent" layoutH="56">
+        <table>
+
+            {{if .valAry}}
+            {{range $k,$columnVal:=.valAry}}
+
+            {{if $.columns}}
+            {{range $kc,$column:=$.columns}}
+            {{if eq $k $kc}}
+            <tr>
+                <td style="height: 25px;">
+
+                    {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{LimitStrLen $column.Comment 50}} {{ end}}
+
+
+                    : </td>
+
+                <td>
+
+                    {{if $columnVal | IsTime}}
+                    <input type="text" name="{{$column.Name}}" class="date" style="width: 200px" readonly="true" dateFmt="yyyy-MM-dd HH:mm:ss"
+                           value="{{$columnVal | FormatInterface2Time}}"/>
+                    {{else}}
+
+                    <input type="text" {{if $column.IsPrimaryKey}} {{if $column.IsAutoIncrement}} readonly="true" {{end}} {{end}}name="{{$column.Name}}" style="width: 300px" class="textInput" value="{{$columnVal}}"/>
+                    {{end}}
+
+
+                </td>
+                <td>(字段名:{{$column.Name}} 类型:{{$column.DataType}})</td>
+            </tr>
+            {{end}}
+            {{end}}
+            {{end}}
+            {{end}}
+            {{end}}
+        </table>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="buttonActive">
+                    <div class="buttonContent">
+                        <button type="submit">提交</button>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+                        <button type="button" class="close">取消</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</form>

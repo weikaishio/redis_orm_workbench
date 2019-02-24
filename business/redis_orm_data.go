@@ -99,6 +99,18 @@ func (this *RedisORMDataBusiness) Query(condition *models.DataConditionInfo, off
 	}
 	return val, count, err
 }
+func (this *RedisORMDataBusiness) Get(table *redis_orm.Table, pkId int64) (map[string]interface{}, bool, error) {
+	searchCon := redis_orm.NewSearchConditionV2(pkId, pkId, table.PrimaryKey)
+
+	val, count, err := this.redisORMEngine.Query(0, 1, searchCon, table)
+	if err != nil {
+		log.Error("Query(%d,%d,searchCon:%v,tableName:%s) err:%v")
+	}
+	if count == 1 {
+		return val[0], true, err
+	}
+	return nil, false, err
+}
 
 /*
 find by table, return map array
@@ -125,4 +137,26 @@ func (this *RedisORMDataBusiness) List(searchCon *redis_orm.SearchCondition, pag
 		log.Error("Count err:%v", err)
 	}
 	return resultAry, count, err
+}
+
+func (this *RedisORMDataBusiness) Del(table *redis_orm.Table, pkInt int64) error {
+	err := this.redisORMEngine.DeleteByPK(table, pkInt)
+	return err
+}
+
+func (this *RedisORMDataBusiness) Edit(table *redis_orm.Table, columnValMap map[string]string) error {
+	return this.redisORMEngine.UpdateByMap(table, columnValMap)
+}
+
+func (this *RedisORMDataBusiness) Insert(table *redis_orm.Table, columnValMap map[string]string) error {
+	return this.redisORMEngine.InsertByMap(table, columnValMap)
+}
+func (this *RedisORMDataBusiness) RebuildIndex(table *redis_orm.Table) error {
+	return this.redisORMEngine.Index.ReBuildByTable(table)
+}
+func (this *RedisORMDataBusiness) DropTable(table *redis_orm.Table) error {
+	return this.redisORMEngine.Schema.TableDrop(table)
+}
+func (this *RedisORMDataBusiness) TruncateTable(table *redis_orm.Table) error {
+	return this.redisORMEngine.TableTruncateByTable(table)
 }

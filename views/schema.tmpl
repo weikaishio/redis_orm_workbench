@@ -1,10 +1,12 @@
 
 <div class="pageContent">
-<pre>
+ <textarea name="body"  cols="90" rows="32"  >
+
 type {{$.table_name}} struct {
 {{if $.columns}}{{range $id,$column:=$.columns}}
         {{$column.ColumnName}} {{$column.DataType}} `redis_orm:"{{$column.Tags}}"`
 {{end}}{{end}}
 }
-</pre>
+
+</textarea>
 </div>

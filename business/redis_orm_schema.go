@@ -116,3 +116,8 @@ func (this *RedisORMSchemaBusiness) CreateTable() {
 func (this *RedisORMSchemaBusiness) AlterTable() {
 
 }
+
+//
+func (this *RedisORMSchemaBusiness) DropTable(table *redis_orm.Table) error{
+	return this.redisORMEngine.Schema.TableDrop(table)
+}
