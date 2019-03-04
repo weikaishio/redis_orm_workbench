@@ -1,0 +1,35 @@
+<form method="POST" action="/schema/table_create" class="pageForm required-validate"
+      onsubmit="return iframeCallback(this, dialogAjaxDone);">
+    <div class="pageFormContent" layoutH="56">
+    <pre>
+    直接输入struct即可 比如：
+    type FaqTestTb struct {
+    	Fid     int64  `redis_orm:"pk"`
+    	Title   string `redis_orm:"dft 'faqtitle' index comment '标题'" xorm:"default 'faqtitle' VARCHAR(64)"`
+    	Content string `redis_orm:"dft 'cnt' comment '内容'" xorm:"default 'cnt' VARCHAR(200)"`
+    }
+    然后点击提交创建表
+    </pre>
+ <textarea name="txt_content" cols="86" rows="20"  >
+</textarea>
+</div>
+   <div class="formBar">
+        <ul>
+            <li>
+                <div class="buttonActive">
+                    <div class="buttonContent">
+                        <button type="submit">提交</button>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+                        <button type="button" class="close">取消</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</form>

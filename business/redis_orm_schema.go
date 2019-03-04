@@ -2,10 +2,13 @@ package business
 
 import (
 	"fmt"
+	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
+	"github.com/weikaishio/redis_orm/table_from_ast"
 	"github.com/weikaishio/redis_orm_workbench/models"
 	"reflect"
 	"strings"
+	"encoding/json"
 )
 
 type RedisORMSchemaBusiness struct {
@@ -108,8 +111,36 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 }
 
 //ast from table struct
-func (this *RedisORMSchemaBusiness) CreateTable() {
-
+func (this *RedisORMSchemaBusiness) CreateTable(tableDefSchema string) error {
+	tableDefSchema = "package schema\n" + tableDefSchema
+	tables, err := table_from_ast.TableFromAst("", tableDefSchema)
+	if err != nil {
+		log.Error("CreateTable %s,err:%v", tableDefSchema, err)
+		return err
+	}
+	var successTable []*redis_orm.Table
+	for i, table := range tables {
+		valTb, _ := json.Marshal(table)
+		log.Info("valTb:%v\n", string(valTb))
+		err = this.redisORMEngine.Schema.CreateTableByTable(table)
+		if err != nil {
+			if err != redis_orm.Err_DataHadAvailable {
+				for j, tableRollback := range successTable {
+					if i == j {
+						break
+					}
+					this.redisORMEngine.Schema.TableDrop(tableRollback)
+				}
+				log.Error("CreateTable %s,err:%v", tableDefSchema, err)
+				return err
+			} else {
+				log.Warn("CreateTable %s, table:%s HasExist", tableDefSchema, table.Name)
+			}
+		} else {
+			successTable = append(successTable, table)
+		}
+	}
+	return nil
 }
 
 //
@@ -118,6 +149,6 @@ func (this *RedisORMSchemaBusiness) AlterTable() {
 }
 
 //
-func (this *RedisORMSchemaBusiness) DropTable(table *redis_orm.Table) error{
+func (this *RedisORMSchemaBusiness) DropTable(table *redis_orm.Table) error {
 	return this.redisORMEngine.Schema.TableDrop(table)
 }

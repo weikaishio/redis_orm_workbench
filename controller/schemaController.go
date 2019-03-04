@@ -7,6 +7,7 @@ import (
 	"github.com/weikaishio/redis_orm"
 	"net/http"
 	"sort"
+	"strings"
 )
 
 func Schema(c *gin.Context) {
@@ -34,7 +35,28 @@ func Schema(c *gin.Context) {
 }
 
 func CreateTable(c *gin.Context) {
-
+	if strings.ToLower(c.Request.Method) == "get" {
+		c.HTML(http.StatusOK, "table_create.tmpl", gin.H{})
+	} else if strings.ToLower(c.Request.Method) == "post" {
+		val := strings.Trim(c.PostForm("txt_content"), " ")
+		if val == "" {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+				"message":  "content could not be null",
+				"navTabId": "data_" + c.Query("table_name")})
+			return
+		}
+		err := redisORMSchemaBiz.CreateTable(val)
+		if err != nil {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
+				"message":  "处理失败：" + err.Error(),
+				"navTabId": "data_create_table"})
+		} else {
+			c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+				"message":  "处理成功",
+				"navTabId": "data_create_table"})
+		}
+	}
+	return
 }
 func DropTable(c *gin.Context) {
 	table, err := VerifyTable(c)
