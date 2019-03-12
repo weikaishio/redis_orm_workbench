@@ -1,8 +1,7 @@
 package controller
 
 import (
-	"errors"
-	"fmt"
+		"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/weikaishio/redis_orm"
 	"net/http"
@@ -66,8 +65,8 @@ func DropTable(c *gin.Context) {
 			"navTabId": "data_" + c.Query("table_name")})
 		return
 	}
-	//err = redisORMDataBiz.DropTable(table)
-	err = errors.New("太危险了，功能先不放出来")
+	err = redisORMDataBiz.DropTable(table)
+	//err = errors.New("太危险了，功能先不放出来")
 	if err != nil {
 		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
 			"message":  "处理失败：" + err.Error(),

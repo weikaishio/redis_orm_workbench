@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mkideal/log"
@@ -267,7 +266,20 @@ func DataEdit(c *gin.Context) {
 			if !has {
 				valMap[colName] = col.DefaultValue
 			} else {
-				valMap[colName] = v
+				if strings.HasSuffix(colName, "At") && col.DataType == "int64" {
+					if strings.Contains(v,"-") {
+						t, err := time.ParseInLocation("2006-01-02 15:04:05", v, time.Local)
+						if err != nil || t.IsZero() {
+							valMap[colName] = ""
+						} else {
+							valMap[colName] = redis_orm.ToString(t.Unix())
+						}
+					}else{
+						valMap[colName] = v
+					}
+				} else {
+					valMap[colName] = v
+				}
 			}
 		}
 		log.Info("valMap:%v", valMap)
@@ -325,8 +337,8 @@ func TruncateTable(c *gin.Context) {
 			"navTabId": "data_" + c.Query("table_name")})
 		return
 	}
-	//err = redisORMDataBiz.TruncateTable(table)
-	err = errors.New("太危险了，功能先不放出来")
+	err = redisORMDataBiz.TruncateTable(table)
+	//err = errors.New("太危险了，功能先不放出来")
 	if err != nil {
 		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
 			"message":  "处理失败：" + err.Error(),

@@ -12,14 +12,14 @@
             <tr>
                 <td style="height: 25px;">
 
-                    {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{LimitStrLen $column.Comment 50}} {{ end}}
+                    {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{LimitStrLen $column.Comment 25}} {{ end}}
 
 
                     : </td>
 
                 <td>
 
-                    {{if $columnVal | IsTime}}
+                    {{if IsTime $columnVal $column.Name}}
                     <input type="text" name="{{$column.Name}}" class="date" style="width: 200px" readonly="true" dateFmt="yyyy-MM-dd HH:mm:ss"
                            value="{{$columnVal | FormatInterface2Time}}"/>
                     {{else}}

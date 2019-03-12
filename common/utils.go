@@ -29,7 +29,7 @@ func FormatInterface2Time(val interface{}) string {
 	}
 }
 
-func IsTime(val interface{}) bool {
+func IsTime(val interface{}, colName string) bool {
 	switch v := val.(type) {
 	case int64:
 		_, isTime := FormatTime(v)
@@ -43,6 +43,8 @@ func IsTime(val interface{}) bool {
 				_, isTime := FormatTime(timeUnix)
 				return isTime
 			}
+		} else if strings.HasSuffix(colName, "At") {
+			return true
 		}
 		return false
 	}
@@ -74,10 +76,10 @@ func FormatTime(timeUnix int64) (string, bool) {
 			//纳秒
 			formatedTime = time.Unix(timeUnix/1e9, 0).Format("2006-01-02 15:04:05")
 		default:
-			return formatedTime,false
+			return formatedTime, false
 		}
 	}
-	return formatedTime,true
+	return formatedTime, true
 }
 
 func DescryptRC4Base64(p, keystr string) []byte {
