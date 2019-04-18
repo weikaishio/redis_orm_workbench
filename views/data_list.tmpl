@@ -104,12 +104,12 @@
                                                               title="确实要清空表数据吗？" target="ajaxTodo"><span>清空表数据</span></a></li>
         </ul>
 </div>
-    <table class="list" width="100%" layoutH="138">
+    <table class="table" width="100%" layoutH="158">
         <thead>
         <tr>
             {{if .columns}}
             {{range $k,$column:=.columns}}
-            <th width="10%">
+            <th width="4%">
                 {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{$column.Comment}}{{ end}}
             </th>
             {{end}}

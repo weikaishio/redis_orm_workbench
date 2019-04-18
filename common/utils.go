@@ -20,7 +20,7 @@ func FormatInterface2Time(val interface{}) string {
 		if valStr != "" {
 			var timeUnix int64
 			err := redis_orm.SetInt64FromStr(&timeUnix, valStr)
-			if err == nil && timeUnix > 0 {
+			if err == nil && timeUnix > 956053942 && timeUnix < 1902738742 {
 				val, _ := FormatTime(timeUnix)
 				return val
 			}

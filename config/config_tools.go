@@ -95,10 +95,11 @@ func (cfg *ConfigTools) loadAdvancedConfig(conf string) error {
 	opts, err := c.SectionOptions(section)
 	if err != nil {
 		log.Error("SectionOptions(login) err:%v", err)
-	}
-	for _, opt := range opts {
-		pwd, _ := c.String(section, opt)
-		cfg.UserMap[opt] = pwd
+	}else {
+		for _, opt := range opts {
+			pwd, _ := c.String(section, opt)
+			cfg.UserMap[opt] = pwd
+		}
 	}
 	return nil
 }
