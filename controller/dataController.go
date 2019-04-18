@@ -208,9 +208,9 @@ func DataEdit(c *gin.Context) {
 			var vals []interface{}
 			for _, column := range columns {
 				if column.IsPrimaryKey {
-					if column.IsAutoIncrement {
+					//if column.IsAutoIncrement {
 						vals = append(vals, 0)
-					}
+					//}
 				} else if column.IsUpdated || column.IsCreated {
 					vals = append(vals, time.Now().Unix())
 				} else {

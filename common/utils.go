@@ -39,7 +39,7 @@ func IsTime(val interface{}, colName string) bool {
 		if valStr != "" {
 			var timeUnix int64
 			err := redis_orm.SetInt64FromStr(&timeUnix, valStr)
-			if err == nil && timeUnix > 0 {
+			if err == nil && timeUnix > 956053942 && timeUnix < 1902738742 {
 				_, isTime := FormatTime(timeUnix)
 				return isTime
 			}
