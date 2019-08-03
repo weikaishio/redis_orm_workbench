@@ -50,6 +50,15 @@ func IsTime(val interface{}, colName string) bool {
 	}
 }
 
+func IsUseTextarea(colName string) bool {
+	colName = strings.ToLower(colName)
+	if strings.Contains(colName, "share") || strings.Contains(colName, "detail") || strings.Contains(colName, "description") || strings.Contains(colName, "content") {
+		return true
+	}
+
+	return false
+}
+
 func LimitStrLen(val string, limitLen int) string {
 	val = strings.Split(val, " ")[0]
 	if len(val) > limitLen {
