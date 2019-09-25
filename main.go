@@ -30,6 +30,7 @@ func setupRouter() *gin.Engine {
 	r.SetFuncMap(template.FuncMap{
 		"FormatInterface2Time": common.FormatInterface2Time,
 		"IsTime":               common.IsTime,
+		"IsUseTextarea":        common.IsUseTextarea,
 		"LimitStrLen":          common.LimitStrLen,
 	})
 	r.Use(controller.UseMiddleware)
@@ -51,7 +52,7 @@ func setupRouter() *gin.Engine {
 	r.GET("/schema", controller.Schema)
 	r.GET("/schema/create_table", controller.CreateTable)
 	r.Any("/schema/drop_table", controller.DropTable)
-	r.Any("/schema/table_create",controller.CreateTable)
+	r.Any("/schema/table_create", controller.CreateTable)
 
 	r.Any("/data_list", controller.DataList)
 	r.POST("/data_list/del", controller.DataDel)
