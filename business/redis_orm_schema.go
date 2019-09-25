@@ -1,6 +1,7 @@
 package business
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/mkideal/log"
 	"github.com/weikaishio/redis_orm"
@@ -8,7 +9,6 @@ import (
 	"github.com/weikaishio/redis_orm_workbench/models"
 	"reflect"
 	"strings"
-	"encoding/json"
 )
 
 type RedisORMSchemaBusiness struct {
@@ -103,6 +103,15 @@ func (this *RedisORMSchemaBusiness) BuildSchemaColumnsInfo(tableName string) (bo
 		if schemaColumnTb.ColumnComment != "" {
 			tags = append(tags, redis_orm.TagComment)
 			tags = append(tags, fmt.Sprintf("'%s'", schemaColumnTb.ColumnComment))
+		}
+		if column.EnumOptions != nil && len(column.EnumOptions) > 0 {
+			schemaColumn.DataType = reflect.String.String()
+			tags = append(tags, redis_orm.TagEnum)
+			var enumAry []string
+			for k, _ := range column.EnumOptions {
+				enumAry = append(enumAry, k)
+			}
+			tags = append(tags, fmt.Sprintf("'%s'", strings.Join(enumAry, ",")))
 		}
 		schemaColumn.Tags = strings.Join(tags, " ")
 		columns = append(columns, schemaColumn)
