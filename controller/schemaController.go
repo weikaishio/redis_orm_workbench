@@ -1,7 +1,7 @@
 package controller
 
 import (
-		"fmt"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/weikaishio/redis_orm"
 	"net/http"
@@ -66,21 +66,14 @@ func DropTable(c *gin.Context) {
 		return
 	}
 	err = redisORMDataBiz.DropTable(table)
-	//err = errors.New("太危险了，功能先不放出来")
 	if err != nil {
 		c.JSON(http.StatusOK, map[string]string{"statusCode": "300",
 			"message":  "处理失败：" + err.Error(),
 			"navTabId": "data_" + table.Name})
 	} else {
-		c.Redirect(200,"/")
-		//c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
-		//	"message":  "处理成功",
-		//	"navTabId": "data_" + table.Name})
+		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+			"message":      "处理成功",
+			"navTabId":     "data_list?table_name=schematablestb",
+			"callbackType": "closeCurrent"})
 	}
-}
-func AddColumn(c *gin.Context) {
-
-}
-func DropColumn(c *gin.Context) {
-
 }

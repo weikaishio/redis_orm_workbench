@@ -158,7 +158,7 @@ func VerifyTableAndPkInt(c *gin.Context) (pkId int64, table *redis_orm.Table, er
 		err = fmt.Errorf("%s参数不对", "pk_id")
 		return
 	}
-	redis_orm.SetInt64FromStr(&pkId, pkIdStr)
+	_ = redis_orm.SetInt64FromStr(&pkId, pkIdStr)
 
 	tables := redisORMSchemaBiz.LoadTables()
 
@@ -184,7 +184,7 @@ func DataDel(c *gin.Context) {
 			"navTabId": "data_" + table.Name})
 	} else {
 		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
-			"message":  fmt.Sprint("删除成功：删除的ID=%d", pkId),
+			"message":  fmt.Sprintf("删除成功：删除的ID=%d", pkId),
 			"navTabId": "data_" + table.Name})
 	}
 	//不用bean，直接传table和map~
@@ -217,12 +217,12 @@ func DataEdit(c *gin.Context) {
 			for _, column := range columns {
 				if column.IsPrimaryKey {
 					//if column.IsAutoIncrement {
-						vals = append(vals, 0)
+					vals = append(vals, 0)
 					//}
 				} else if column.IsUpdated || column.IsCreated {
 					vals = append(vals, time.Now().Unix())
 				} else {
-					vals = append(vals, "")
+					vals = append(vals, column.DefaultValue)
 				}
 			}
 			c.HTML(http.StatusOK, "data_edit.tmpl", gin.H{
@@ -275,14 +275,14 @@ func DataEdit(c *gin.Context) {
 				valMap[colName] = col.DefaultValue
 			} else {
 				if strings.HasSuffix(colName, "At") && col.DataType == "int64" {
-					if strings.Contains(v,"-") {
+					if strings.Contains(v, "-") {
 						t, err := time.ParseInLocation("2006-01-02 15:04:05", v, time.Local)
 						if err != nil || t.IsZero() {
 							valMap[colName] = ""
 						} else {
 							valMap[colName] = redis_orm.ToString(t.Unix())
 						}
-					}else{
+					} else {
 						valMap[colName] = v
 					}
 				} else {
