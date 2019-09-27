@@ -79,12 +79,20 @@ func DataList(c *gin.Context) {
 	//	indexs=append(indexs,v)
 	//}
 	//log.Info("index:%v",indexs)
-	var columns redis_orm.ColumnsModel
+	var (
+		columnsPre, columns redis_orm.ColumnsModel
+	)
 	for _, column := range table.ColumnsMap {
-		columns = append(columns, column)
+		columnsPre = append(columnsPre, column)
 	}
-	if len(columns) > 0 {
-		sort.Sort(columns)
+	if len(columnsPre) > 0 {
+		sort.Sort(columnsPre)
+	}
+	for i, column := range columnsPre {
+		if i > 9 && !column.IsCreated && !column.IsUpdated {
+			continue
+		}
+		columns = append(columns, column)
 	}
 	var valAry [][]interface{}
 	for _, v := range valMap {

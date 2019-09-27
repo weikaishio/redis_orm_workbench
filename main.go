@@ -32,6 +32,8 @@ func setupRouter() *gin.Engine {
 		"IsTime":               common.IsTime,
 		"IsUseTextarea":        common.IsUseTextarea,
 		"LimitStrLen":          common.LimitStrLen,
+		"IsEnum":               common.IsEnum,
+		"IsEqual":              common.IsEqual,
 	})
 	r.Use(controller.UseMiddleware)
 

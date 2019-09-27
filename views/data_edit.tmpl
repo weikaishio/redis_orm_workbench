@@ -4,41 +4,47 @@
         <table>
 
             {{if .valAry}}
-            {{range $k,$columnVal:=.valAry}}
+                {{range $k,$columnVal:=.valAry}}
 
-            {{if $.columns}}
-            {{range $kc,$column:=$.columns}}
-            {{if eq $k $kc}}
-            <tr>
-                <td style="height: 25px;">
+                    {{if $.columns}}
+                        {{range $kc,$column:=$.columns}}
+                            {{if eq $k $kc}}
+                                <tr>
+                                    <td style="height: 25px;">
 
-                    {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{LimitStrLen $column.Comment 25}} {{ end}}
+                                        {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{LimitStrLen $column.Comment 25}} {{ end}}
 
 
-                    : </td>
+                                        : </td>
 
-                <td>
+                                    <td>
 
-                    {{if IsTime $columnVal $column.Name}}
-                    <input type="text" name="{{$column.Name}}" class="date" style="width: 200px" readonly="true" dateFmt="yyyy-MM-dd HH:mm:ss"
-                           value="{{$columnVal | FormatInterface2Time}}"/>
+                                        {{if IsTime $columnVal $column.Name}}
+                                            <input type="text" name="{{$column.Name}}" class="date" style="width: 200px" readonly="true" dateFmt="yyyy-MM-dd HH:mm:ss"
+                                                   value="{{$columnVal | FormatInterface2Time}}"/>
 
-                    {{else}}
-                     {{if IsUseTextarea $column.Name}}
-<textarea rows="3" cols="50" name="{{$column.Name}}" class="textInput" style="resize:none">{{$columnVal}}</textarea>
- {{else}}
-                    <input type="text" {{if $column.IsPrimaryKey}} {{if $column.IsAutoIncrement}} readonly="true" {{end}} {{end}}name="{{$column.Name}}" style="width: 300px" class="textInput" value="{{$columnVal}}"/>
+                                        {{else if IsEnum $column.EnumOptions}}
+                                            <select name="{{$column.Name}}" class="{{$.tableName}}" id="{{$column.Name}}">
+                                                {{range $k,$v:=$column.EnumOptions}}
+                                                    <option value="{{$k}}" {{if IsEqual $k $columnVal}}selected{{end}} >{{$k}}</option>
+                                                {{end}}
+                                            </select>
+                                        {{else}}
+                                            {{if IsUseTextarea $column.Name}}
+                                                <textarea rows="3" cols="50" name="{{$column.Name}}" class="textInput" style="resize:none">{{$columnVal}}</textarea>
+                                            {{else}}
+                                                <input type="text" {{if $column.IsPrimaryKey}} {{if $column.IsAutoIncrement}} readonly="true" {{end}} {{end}}name="{{$column.Name}}" style="width: 300px" class="textInput" value="{{$columnVal}}"/>
+                                            {{end}}
+                                        {{end}}
+
+
+                                    </td>
+                                    <td>(字段名:{{$column.Name}} 类型:{{$column.DataType}})</td>
+                                </tr>
+                            {{end}}
+                        {{end}}
                     {{end}}
-                     {{end}}
-
-
-                </td>
-                <td>(字段名:{{$column.Name}} 类型:{{$column.DataType}})</td>
-            </tr>
-            {{end}}
-            {{end}}
-            {{end}}
-            {{end}}
+                {{end}}
             {{end}}
         </table>
     </div>

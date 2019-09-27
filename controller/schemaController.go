@@ -72,9 +72,10 @@ func DropTable(c *gin.Context) {
 			"message":  "处理失败：" + err.Error(),
 			"navTabId": "data_" + table.Name})
 	} else {
-		c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
-			"message":  "处理成功",
-			"navTabId": "data_" + table.Name})
+		c.Redirect(200,"/")
+		//c.JSON(http.StatusOK, map[string]string{"statusCode": "200",
+		//	"message":  "处理成功",
+		//	"navTabId": "data_" + table.Name})
 	}
 }
 func AddColumn(c *gin.Context) {

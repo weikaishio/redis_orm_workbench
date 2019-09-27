@@ -116,3 +116,9 @@ func EncryptRC4Base64(p []byte, key string) string {
 	str := base64.StdEncoding.EncodeToString(dst)
 	return str
 }
+func IsEqual(val1, val2 interface{}) bool {
+	return redis_orm.ToString(val1) == redis_orm.ToString(val2)
+}
+func IsEnum(enumOptions map[string]int) bool {
+	return enumOptions != nil
+}

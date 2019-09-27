@@ -24,9 +24,9 @@
                         <select name="idxNameKey" onchange="onChangeIdx(this)" class="{{$.tableName}}" id="idxNameKey">
                             <option value="" {{if eq $.idxNameKey ""}}selected{{end}}>请选择</option>
                             {{if $.indexs}}
-                            {{range $id,$index:=$.indexs}}
-                            <option value="{{$index.NameKey}}" dataExt="{{$index.IndexColumn}}" dataType="{{$index.Type}}" {{if eq $.idxNameKey $index.NameKey}}selected{{end}}>{{if eq $index.Comment ""}} {{$index.IndexColumn}} {{else}} {{$index.Comment}} {{end}} </option>
-                            {{end}}
+                                {{range $id,$index:=$.indexs}}
+                                    <option value="{{$index.NameKey}}" dataExt="{{$index.IndexColumn}}" dataType="{{$index.Type}}" {{if eq $.idxNameKey $index.NameKey}}selected{{end}}>{{if eq $index.Comment ""}} {{$index.IndexColumn}} {{else}} {{$index.Comment}} {{end}} </option>
+                                {{end}}
                             {{end}}
                         </select>
                         <select name="ctype" onchange="onChangeIdxType(1)" class="{{$.tableName}}" id="ctype">
@@ -87,82 +87,69 @@
 
 
 <div class="pageContent">
- <div class="panelBar">
+    <div class="panelBar">
         <ul class="toolBar">
-        <li><a class="add" target="dialog" href="/data_list/edit?table_name={{$.tableName}}"  width="700" height="550" resizable="true"
-                           warn="请选择一个操作对象" mask="true"><span>新增</span></a></li>
+            <li><a class="add" target="dialog" href="/data_list/edit?table_name={{$.tableName}}"  width="900" height="550" resizable="true"
+                   warn="请选择一个操作对象" mask="true"><span>新增</span></a></li>
             <li><a class="icon" href="/schema?table_name={{.tableName}}" target="dialog" mask="true" resizable="true"
                    rel="sysInfo"
                    width="680" height="520"><span>表结构</span></a></li>
 
-                        <li><a class="edit" href="/data_list/rebuild_index?table_name={{.tableName}}"
-                                                              title="确实要重建索引吗？" target="ajaxTodo"><span>重建索引</span></a></li>
-                        <li><a class="delete" href="/schema/drop_table?table_name={{.tableName}}"
-                                                              title="确实要删除表吗？" target="ajaxTodo"><span>删除表</span></a></li>
+            <li><a class="edit" href="/data_list/rebuild_index?table_name={{.tableName}}"
+                   title="确实要重建索引吗？" target="ajaxTodo"><span>重建索引</span></a></li>
+            <li><a class="delete" href="/schema/drop_table?table_name={{.tableName}}"
+                   title="确实要删除表吗？" target="ajaxTodo"><span>删除表</span></a></li>
 
-                        <li><a class="edit" href="/data_list/truncate_table?table_name={{.tableName}}"
-                                                              title="确实要清空表数据吗？" target="ajaxTodo"><span>清空表数据</span></a></li>
+            <li><a class="edit" href="/data_list/truncate_table?table_name={{.tableName}}"
+                   title="确实要清空表数据吗？" target="ajaxTodo"><span>清空表数据</span></a></li>
         </ul>
-</div>
+    </div>
     <table class="table" width="100%" layoutH="158">
         <thead>
         <tr>
             {{if .columns}}
-            {{range $k,$column:=.columns}}
-            <th width="4%">
-                {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{$column.Comment}}{{ end}}
-            </th>
-            {{end}}
+                {{range $k,$column:=.columns}}
+                    <th width="4%">
+                        {{if eq $column.Comment ""}}  {{$column.Name}}  {{else}}  {{$column.Comment}}{{ end}}
+                    </th>
+                {{end}}
             {{end}}
             <th width="10%">操作</th>
         </tr>
         </thead>
         <tbody style="word-wrap:break-word;word-break:break-all">
         {{if .valAry}}
-        {{range $k,$row :=.valAry}}
-        <tr style="word-wrap:break-word;">
-            {{if $row}}
-            {{range $columnName,$columnVal:=$row}}
-            <td title="{{$columnName}}">
-                {{$columnVal | FormatInterface2Time}}
-            </td>
+            {{range $k,$row :=.valAry}}
+                <tr style="word-wrap:break-word;">
+                    {{if $row}}
+                        {{range $columnName,$columnVal:=$row}}
+                            <td title="{{$columnName}}">
+                                {{$columnVal | FormatInterface2Time}}
+                            </td>
 
+                        {{end}}
+                        <td>
+                            {{if $.columns}}
+                                {{range $k,$column:=$.columns}}
+                                    {{if eq $column.Name $.primaryKey}}
+                                        {{range $columnName,$columnVal:=$row}}
+                                            {{if eq $columnName $k}}
+                                                <a title="确实要删除这些记录吗？" target="ajaxTodo" href="/data_list/del?pk_id={{$columnVal}}&table_name={{$.tableName}}" warn="请选择一个操作对象"
+                                                   class="btnDel">删除</a>
+                                                <a target="dialog" href="/data_list/edit?pk_id={{$columnVal}}&table_name={{$.tableName}}" class="btnEdit"  width="900" height="550" resizable="true"
+                                                   warn="请选择一个操作对象" mask="true">编辑</a>
+                                            {{end}}
+                                        {{end}}
+                                    {{end}}
+                                {{end}}
+                            {{end}}
+                        </td>
+                    {{end}}
+                </tr>
             {{end}}
-            <td>
-                {{if $.columns}}
-                {{range $k,$column:=$.columns}}
-                {{if eq $column.Name $.primaryKey}}
-                {{range $columnName,$columnVal:=$row}}
-                {{if eq $columnName $k}}
-                <a title="确实要删除这些记录吗？" target="ajaxTodo" href="/data_list/del?pk_id={{$columnVal}}&table_name={{$.tableName}}" warn="请选择一个操作对象"
-                   class="btnDel">删除</a>
-                <a target="dialog" href="/data_list/edit?pk_id={{$columnVal}}&table_name={{$.tableName}}" class="btnEdit"  width="700" height="550" resizable="true"
-                   warn="请选择一个操作对象" mask="true">编辑</a>
-                {{end}}
-                {{end}}
-                {{end}}
-                {{end}}
-                {{end}}
-            </td>
-            {{end}}
-        </tr>
-        {{end}}
         {{end}}
         </tbody>
     </table>
-    {{/*
-    <div class="panelBar">
-        <div class="pages">
-            <span>显示</span>
-            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
-                <option value="15" selected>15</option>
-            </select>
-            <span>条,共100条</span>
-        </div>
-        <div class="pagination" targetType="navTab" totalCount="100" numPerPage="5" pageNumShown="5"
-             currentPage="1"></div>
-    </div>
-    */}}
     <div class="panelBar">
 
         <div class="pages">
