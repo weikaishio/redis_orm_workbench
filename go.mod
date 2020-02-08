@@ -13,3 +13,5 @@ require (
 	github.com/weikaishio/distributed_lib v0.0.0-20190912090327-883d11fbc385 // indirect
 	github.com/weikaishio/redis_orm v0.0.0-20190925124159-7c3edfde88bc
 )
+
+go 1.13

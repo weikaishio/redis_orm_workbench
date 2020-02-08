@@ -130,6 +130,10 @@ func readRedisConfig(section, rc4key string, c *robfigconf.Config) (*redis.Clien
 		WriteTimeout:       10 * time.Second,
 		IdleTimeout:        60 * time.Second,
 		IdleCheckFrequency: 15 * time.Second,
+		MaxConnAge:         180 * time.Second,
+		MinIdleConns:       10,
+		PoolSize:           30,
+		PoolTimeout:        30 * time.Second,
 	}
 	if port == 6380 { //azure的规则，就把6380当ssl处理
 		options.TLSConfig = &tls.Config{

@@ -67,7 +67,7 @@ func setupRouter() *gin.Engine {
 var (
 	pidFile  = flag.String("pid", "redis_orm_workbench.pid", "pid file")
 	dir      = flag.String("dir", "./config/", "config path")
-	location = flag.String("loc", "local", "server location")
+	location = flag.String("loc", "develop", "server location")
 )
 
 func main() {
