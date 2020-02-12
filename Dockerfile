@@ -7,36 +7,19 @@ LABEL version="1.0" description="redis_orm_workbench" by="timwang"
 RUN echo "mkdir redis_orm_workbench"
 RUN mkdir /usr/local/redis_orm_workbench
 RUN mkdir /usr/local/redis_orm_workbench/config
+RUN mkdir /usr/local/redis_orm_workbench/views
+RUN mkdir /usr/local/redis_orm_workbench/static
 
-ADD ./redis_orm_workbench /usr/local/redis_orm_workbench/
-ADD ./config/basic.conf /usr/local/redis_orm_workbench/config/
-ADD ./config/develop.conf /usr/local/redis_orm_workbench/config/
-
-#ADD ./redis-stable.tar.gz /usr/local/
-
-#WORKDIR /usr/local/redis-stable
-
-#RUN make
-#RUN yum -y install redis
-RUN yum -y update && yum -y install epel-release && yum -y install redis
-EXPOSE 6379
-RUN yum clean all
-
-#RUN sed -i -e 's@bind 127.0.0.1@bind 0.0.0.0@g' /etc/redis.conf
-#RUN sed -i -e 's@protected-mode yes@protected-mode no@g' /etc/redis.conf
-#RUN echo "requirepass test123" >> /etc/redis.conf
-
-RUN echo "run redis-server"
+COPY redis_orm_workbench /usr/local/redis_orm_workbench/
+COPY config/basic.conf /usr/local/redis_orm_workbench/config/
+COPY build/local.conf /usr/local/redis_orm_workbench/config/
+COPY views /usr/local/redis_orm_workbench/views
+COPY static /usr/local/redis_orm_workbench/static
+COPY build/start.sh /usr/local/redis_orm_workbench/
 
 WORKDIR /usr/local/redis_orm_workbench
 EXPOSE 8881
 
-RUN mkdir /usr/local/redis_orm_workbench/views
-RUN mkdir /usr/local/redis_orm_workbench/static
-ADD ./views /usr/local/redis_orm_workbench/views
-ADD ./static /usr/local/redis_orm_workbench/static
-ADD ./start.sh /usr/local/redis_orm_workbench/
-
-CMD source /usr/local/redis_orm_workbench/start.sh
+ENTRYPOINT ["./redis_orm_workbench"]
 
 
