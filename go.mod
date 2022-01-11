@@ -2,7 +2,7 @@ module github.com/weikaishio/redis_orm_workbench
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
-	github.com/gin-gonic/gin v1.4.0
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-redis/redis v6.15.5+incompatible
 	github.com/go-xorm/xorm v0.7.7 // indirect
